@@ -1,7 +1,8 @@
-// Copyright Aisssky
+﻿// Copyright Aisssky
 
 
 #include "Character/CP_BaseCharacter.h"
+#include "AbilitySystemComponent.h"
 
 ACP_BaseCharacter::ACP_BaseCharacter()
 {
@@ -11,3 +12,18 @@ ACP_BaseCharacter::ACP_BaseCharacter()
 
 }
  
+UAbilitySystemComponent* ACP_BaseCharacter::GetAbilitySystemComponent() const
+{
+	return nullptr;
+}
+
+void ACP_BaseCharacter::GiveStartupAbilities()
+{
+	if (!IsValid(GetAbilitySystemComponent()))return;
+	for(const auto& Ability : StartupAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
+		if (!IsValid(Ability))return;
+		GetAbilitySystemComponent()->GiveAbility(AbilitySpec);
+	}
+}

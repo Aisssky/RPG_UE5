@@ -2,13 +2,17 @@
 
 
 #include "Character/CP_PlayerCharacter.h"
+
+#include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Player/CP_PlayerState.h"
 
 ACP_PlayerCharacter::ACP_PlayerCharacter()
 {
+
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -34,4 +38,31 @@ ACP_PlayerCharacter::ACP_PlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+}
+
+UAbilitySystemComponent* ACP_PlayerCharacter::GetAbilitySystemComponent() const
+{
+	ACP_PlayerState* CPPlayerState = Cast<ACP_PlayerState>(GetPlayerState());
+	if(!IsValid(CPPlayerState))return nullptr;
+
+	return CPPlayerState->GetAbilitySystemComponent();
+}
+
+void ACP_PlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!IsValid(GetAbilitySystemComponent())|| !HasAuthority())return;
+
+	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+	GiveStartupAbilities();
+}
+
+void ACP_PlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (!IsValid(GetAbilitySystemComponent()))return;
+
+	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 }

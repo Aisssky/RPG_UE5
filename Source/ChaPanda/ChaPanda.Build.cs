@@ -1,4 +1,4 @@
-// Copyright Aisssky
+﻿// Copyright Aisssky
 
 using UnrealBuildTool;
 
@@ -8,7 +8,11 @@ public class ChaPanda : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { 
+			"Core", "CoreUObject", "Engine", "InputCore" ,
+			"EnhancedInput",
+			"GameplayAbilities","GameplayTags", "GameplayTasks"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
