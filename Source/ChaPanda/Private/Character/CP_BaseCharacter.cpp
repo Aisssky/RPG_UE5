@@ -19,11 +19,11 @@ UAbilitySystemComponent* ACP_BaseCharacter::GetAbilitySystemComponent() const
 
 void ACP_BaseCharacter::GiveStartupAbilities()
 {
-	if (!IsValid(GetAbilitySystemComponent()))return;
+	if (!IsValid(GetAbilitySystemComponent()) || !HasAuthority())return;
 	for(const auto& Ability : StartupAbilities)
 	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
 		if (!IsValid(Ability))return;
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
 		GetAbilitySystemComponent()->GiveAbility(AbilitySpec);
 	}
 }

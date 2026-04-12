@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+
 #include "CP_BaseCharacter.generated.h"
 
 class UGameplayAbility;

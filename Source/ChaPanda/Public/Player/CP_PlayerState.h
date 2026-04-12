@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "AbilitysystemInterface.h"
+#include "AbilitySystemInterface.h"
 
 #include "CP_PlayerState.generated.h"
 

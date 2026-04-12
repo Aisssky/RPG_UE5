@@ -2,13 +2,13 @@
 
 
 #include "Player/CP_PlayerState.h"
-#include "AbilitySystemComponent.h"
+#include "AbilitySystem/CP_AbilitySystemComponent.h"
 
 ACP_PlayerState::ACP_PlayerState()
 {
 	SetNetUpdateFrequency(100.f);
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<UCP_AbilitySystemComponent>("AbilitySystemComponent");
 
 	AbilitySystemComponent->SetIsReplicated(true);
 
