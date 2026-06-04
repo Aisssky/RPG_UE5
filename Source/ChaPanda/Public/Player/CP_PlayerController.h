@@ -44,10 +44,14 @@ private:
 
 	void Jump();
 	void StopJumping();
+
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
+
 	void PrimaryAttack();
 	void ActivateAbility(const FGameplayTag& AbilityTag) const;
 	void SecondaryAttack();
 	void TertiaryAttack();
+
+	bool IsAlive() const;
 };

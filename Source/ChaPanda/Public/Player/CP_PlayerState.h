@@ -9,6 +9,7 @@
 #include "CP_PlayerState.generated.h"
 
 class UAbilitySystemComponent;
+class UAttributeSet;
 
 UCLASS()
 class CHAPANDA_API ACP_PlayerState : public APlayerState, public IAbilitySystemInterface  
@@ -18,9 +19,13 @@ class CHAPANDA_API ACP_PlayerState : public APlayerState, public IAbilitySystemI
 public:
 	ACP_PlayerState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Abilities")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

@@ -14,9 +14,6 @@ class CHAPANDA_API UCP_Primary : public UCP_GameplayAbility
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cha|Abilities")
-	TArray<AActor*> HitBoxOverlapTest();
-
-	UFUNCTION(BlueprintCallable, Category = "Cha|Abilities")
 	void SendHitReactEventToActors(const TArray<AActor*>& ActorsHit);
 
 private:

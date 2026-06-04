@@ -23,6 +23,27 @@ void UCP_AbilitySystemComponent::OnRep_ActivateAbilities()
 	}
 }
 
+void UCP_AbilitySystemComponent::SetAbilityLevel(TSubclassOf<UGameplayAbility> AbilityClass, int32 Level)
+{
+    if(!IsValid(GetAvatarActor())||!GetAvatarActor()->HasAuthority()) return;
+
+    if(FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromClass(AbilityClass))
+    {
+        AbilitySpec->Level = Level;
+		MarkAbilitySpecDirty(*AbilitySpec); 
+    }
+}
+
+void UCP_AbilitySystemComponent::AddToAbilityLevel(TSubclassOf<UGameplayAbility> AbilityClass, int32 Level)
+{
+    if(!IsValid(GetAvatarActor())||!GetAvatarActor()->HasAuthority()) return;
+    if(FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromClass(AbilityClass))
+    {
+        AbilitySpec->Level += Level;
+        MarkAbilitySpecDirty(*AbilitySpec); 
+	}
+}
+
 void UCP_AbilitySystemComponent::HandleActivateAbility(const FGameplayAbilitySpec& AbilitySpec)
 {
     if (!IsValid(AbilitySpec.Ability)) return;
@@ -32,6 +53,7 @@ void UCP_AbilitySystemComponent::HandleActivateAbility(const FGameplayAbilitySpe
         if (Tag.MatchesTagExact(CP_Tags::CPAbilities::ActivateOnGiven))
         {
             TryActivateAbility(AbilitySpec.Handle);
+            return;
         }
     }
 }

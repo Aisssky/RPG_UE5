@@ -15,6 +15,18 @@ enum class EHitDirection : uint8
 	Back
 };
 
+USTRUCT(BlueprintType)
+struct FCloseActorWithTagResult
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	TWeakObjectPtr<AActor> Actor;
+
+	UPROPERTY(BlueprintReadWrite)
+	float Distance{ 0.f };
+};
+
 UCLASS()
 class CHAPANDA_API UCP_BlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 {
@@ -25,4 +37,19 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static FName GetHitDirectionName(const EHitDirection& HitDirection);
+
+	UFUNCTION(BlueprintCallable)
+	static FCloseActorWithTagResult FindClosestActorWithTag(UObject* WorldContextObject, const FVector& Origin, const FName& Tag, float SearchRange);
+
+	UFUNCTION(BlueprintCallable)
+	static void SendDamageEventToPlayer(AActor* Target, const TSubclassOf<UGameplayEffect>& DamageEffect,UPARAM(ref) FGameplayEventData& Payload,const FGameplayTag& DataTag, float Damage,const FGameplayTag& EventTagOverride,UObject* OptionalParticalSystem = nullptr);
+
+	UFUNCTION(BlueprintCallable,Category = "Cha|Abilities")
+	static TArray<AActor*> HotBoxOverlapTest(AActor* AvatarActor, float HitBoxRadius, float HitBoxForwardOffset = 0.f, float HitBoxElevationOssset = 0.f, bool bDrawDebugs = false);
+
+	static void DrawHitBoxOverlapDebugs(const UObject* WorldContextObject, const TArray<FOverlapResult>& OverlapResults,const FVector& HitBoxLocation, float HitBoxRadius);
+	
+	UFUNCTION()
+	static TArray<AActor*> ApplyKnockback(AActor* AvatarActor, const TArray<AActor*>& HitActors, float InnerRadius, float OuterRadius, float RotationAngle = 45.f, bool bDrawDebugs = false);
+
 };

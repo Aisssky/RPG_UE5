@@ -3,6 +3,7 @@
 
 #include "Character/CP_PlayerCharacter.h"
 
+#include "AbilitySystemComponent.h"
 #include "AbilitySystem/CP_AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -48,6 +49,14 @@ UAbilitySystemComponent* ACP_PlayerCharacter::GetAbilitySystemComponent() const
 	return CPPlayerState->GetAbilitySystemComponent();
 }
 
+UAttributeSet* ACP_PlayerCharacter::GetAttributeSet() const
+{
+	ACP_PlayerState* CPPlayerState = Cast<ACP_PlayerState>(GetPlayerState());
+	if (!IsValid(CPPlayerState))return nullptr;
+
+	return CPPlayerState->GetAttributeSet();
+}
+
 void ACP_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -55,7 +64,11 @@ void ACP_PlayerCharacter::PossessedBy(AController* NewController)
 	if (!IsValid(GetAbilitySystemComponent())|| !HasAuthority())return;
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+
+
 	GiveStartupAbilities();
+	InitializeAttributes();
 }
 
 void ACP_PlayerCharacter::OnRep_PlayerState()
@@ -65,4 +78,5 @@ void ACP_PlayerCharacter::OnRep_PlayerState()
 	if (!IsValid(GetAbilitySystemComponent()))return;
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
-}
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+} 
