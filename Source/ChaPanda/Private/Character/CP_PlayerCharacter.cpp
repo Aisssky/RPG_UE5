@@ -2,6 +2,7 @@
 
 
 #include "Character/CP_PlayerCharacter.h"
+#include "AbilitySystem/CP_AttributeSet.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/CP_AbilitySystemComponent.h"
@@ -28,7 +29,8 @@ ACP_PlayerCharacter::ACP_PlayerCharacter()
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 1500.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 1500.f;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(GetRootComponent());
@@ -69,6 +71,10 @@ void ACP_PlayerCharacter::PossessedBy(AController* NewController)
 
 	GiveStartupAbilities();
 	InitializeAttributes();
+
+	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
+	if (!IsValid(CP_AttributeSet))return;
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelagate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 void ACP_PlayerCharacter::OnRep_PlayerState()
@@ -79,4 +85,9 @@ void ACP_PlayerCharacter::OnRep_PlayerState()
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+
+	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
+	if (!IsValid(CP_AttributeSet))return;
+
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelagate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 } 

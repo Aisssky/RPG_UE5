@@ -5,18 +5,43 @@
 
 namespace CP_Tags
 {
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(None, "CPTags.None", "None")
+
+		namespace SetByCaller
+	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Projectile, "CPTags.SetByCaller.Projectile", "Tag for Set by Caller Magnitude for Projectiles")
+
+	}
+
 	namespace CPAbilities
 	{
-		UE_DEFINE_GAMEPLAY_TAG(Primary, "CP_Tags.CPAbilities.Primary");
-		UE_DEFINE_GAMEPLAY_TAG(Secondary, "CP_Tags.CPAbilities.Secondary");
-		UE_DEFINE_GAMEPLAY_TAG(Tertiary, "CP_Tags.CPAbilities.Tertiary");
-		UE_DEFINE_GAMEPLAY_TAG(ActivateOnGiven, "CP_Tags.CPAbilities.ActivateOnGiven");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(ActivateOnGiven, "CPTags.CCAbilities.ActivateOnGiven", "Tag for Abilities that should activate immediately once given.")
+
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Primary, "CPTags.CCAbilities.Primary", "Tag for the Primary Ability")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Secondary, "CPTags.CCAbilities.Secondary", "Tag for the Secondary Ability")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Tertiary, "CPTags.CCAbilities.Tertiary", "Tag for the Tertiary Ability")
+
+			namespace Enemy
+		{
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attack, "CPTags.CCAbilities.Enemy.Attack", "Enemy Attack Tag")
+		}
 	}
+
 	namespace Events
 	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(KillScored, "CPTags.Events.KillScored", "Tag for the KillScored Event")
+
+			namespace Player
+		{
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(HitReact, "CPTags.Events.Player.HitReact", "Tag for the Player HitReact Event")
+				UE_DEFINE_GAMEPLAY_TAG_COMMENT(Death, "CPTags.Events.Player.Death", "Tag for the Player Death Event")
+		}
+
 		namespace Enemy
 		{
-			UE_DEFINE_GAMEPLAY_TAG(HitReact, "CP_Tags.Events.Enemy.HitReact");
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(HitReact, "CPTags.Events.Enemy.HitReact", "Tag for the Enemy HitReact Event")
+				UE_DEFINE_GAMEPLAY_TAG_COMMENT(EndAttack, "CPTags.Events.Enemy.EndAttack", "Tag for the Enemy Ending an Attack")
+				UE_DEFINE_GAMEPLAY_TAG_COMMENT(MeleeTraceHit, "CPTags.Events.Enemy.MeleeTraceHit", "Tag for the Enemy Melee Trace Hit")
 		}
 	}
 }
