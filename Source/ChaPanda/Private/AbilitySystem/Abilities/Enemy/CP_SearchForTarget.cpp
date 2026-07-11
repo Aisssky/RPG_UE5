@@ -5,9 +5,9 @@
 #include "AbilitySystemComponent.h"
 #include "AIController.h"
 #include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
-#include "Abilities/Async/AbilityTask_WaitDelay.h"
+#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "AbilitySystem/AbilityTasks/CP_WaitGameplayEvent.h"
-#include "Characters/CP_EnemyCharacter.h"
+#include "Character/CP_EnemyCharacter.h"
 #include "GameplayTags/CP_Tags.h"
 #include "Tasks/AITask_MoveTo.h"
 #include "Utils/CP_BlueprintFunctionLibrary.h"
@@ -30,7 +30,7 @@ void UCP_SearchForTarget::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	StartSearch();
 
 	WaitGameplayEventTask = UCP_WaitGameplayEvent::WaitGameplayEventToActorProxy(GetAvatarActorFromActorInfo(), CP_Tags::Events::Enemy::EndAttack);
-	WaitGameplayEventTask->EventReceived.AddDynamic(this, &ThisClass::EndAttackEventRecieved);
+	WaitGameplayEventTask->EventReceived.AddDynamic(this, &ThisClass::EndAttackEventReceived);
 	WaitGameplayEventTask->StartActivation();
 }
 
@@ -51,7 +51,7 @@ void UCP_SearchForTarget::Search()
 
 	const FVector SearchOrigin = GetAvatarActorFromActorInfo()->GetActorLocation();	
 	if (!OwningEnemy.IsValid()) return;
-	FCloseActionWithTagResult ClosestActorResult = UCP_BlueprintFunctionLibrary::FindClosestActorWithTag(GetAvatarActorFromActorInfo(), CP_Tags::Characters::Player, OwningEnemy->SearchRadius);
+	FClosestActorWithTagResult ClosestActorResult = UCP_BlueprintFunctionLibrary::FindClosestActorWithTag(GetAvatarActorFromActorInfo(), SearchOrigin, ChaTags::Player, OwningEnemy->SearchRange);
 
 	TargetBaseCharacter = Cast<ACP_BaseCharacter>(ClosestActorResult.Actor);
 	

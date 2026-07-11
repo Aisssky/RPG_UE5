@@ -47,7 +47,7 @@ public:
 	void RotateToTarget(AActor* RotateTarget);
 
 	UPROPERTY(EditAnywhere,Category = "Cha|AI")
-	float SearohRange{ 1000.f };
+	float SearchRange{ 1000.f };
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cha|Damage")
 	float DamageNumberVerticalOffset{ 200.f };

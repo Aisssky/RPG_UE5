@@ -7,9 +7,6 @@
 #include "AbilitySystem/CP_AttributeSet.h"
 #include "CP_AttributeWidget.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class CHAPANDA_API UCP_AttributeWidget : public UUserWidget
 {
@@ -30,4 +27,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent,meta = (DisplayName = "On Attribute Changed"))
 	void BP_OnAttributeChanged(float NewValue, float NewMaxValue,float OldValue);	
 
+	UPROPERTY(BlueprintReadOnly,Category = "Cha|Attributes")
+	TWeakObjectPtr<AActor> AvatarActor;
 };

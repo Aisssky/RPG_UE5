@@ -33,7 +33,7 @@ public:
 	float GetTimelineLength();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cha|AI")
-	bool bIsBeingLauched{ false };
+	bool bIsBeingLaunched{ false };
 
 	void StopMovementUntilLanded();
 

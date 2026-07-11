@@ -27,7 +27,7 @@ void ACP_Projectile::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (!PlayerCharacter->IsAlive())return;
 
 	UAbilitySystemComponent* AbilitySystemComponent = PlayerCharacter->GetAbilitySystemComponent();
-	if (IsValid(AbilitySystemComponent) || !HasAuthority())return;	
+	if (!IsValid(AbilitySystemComponent) || !HasAuthority())return;	
 
 	FGameplayEventData Payload;
 	Payload.Instigator = GetOwner();

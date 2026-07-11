@@ -43,18 +43,22 @@ void ACP_PlayerController::SetupInputComponent()
 void ACP_PlayerController::Jump()
 {
 	if(!IsValid(GetCharacter()))return;
+	if (!IsAlive())return;
+
 	GetCharacter()->Jump();
 }
 
 void ACP_PlayerController::StopJumping()
 {
 	if (!IsValid(GetCharacter()))return;
+	if (!IsAlive())return;
+
 	GetCharacter()->StopJumping();
 }
 
 void ACP_PlayerController::Look(const FInputActionValue& Value)
 {
-	if (!IsValid(GetPawn()))return;
+	if (!IsAlive())return;
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	
 	AddYawInput(LookAxisValue.X);
@@ -65,6 +69,8 @@ void ACP_PlayerController::Look(const FInputActionValue& Value)
 void ACP_PlayerController::Move(const FInputActionValue& Value)
 {
 	if (!IsValid(GetPawn()))return;
+	if (!IsAlive())return;
+
 	const FVector2D MovementVector = Value.Get<FVector2D>(); 
 
 	const FRotator YawRotation(0.f,GetControlRotation().Yaw,0.f);
@@ -82,8 +88,10 @@ void ACP_PlayerController::PrimaryAttack()
 
 void ACP_PlayerController::ActivateAbility(const FGameplayTag& AbilityTag) const
 {
+	if (!IsAlive())return;
 	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
 	if (!IsValid(ASC))return;
+
 	ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 
 }
@@ -98,3 +106,9 @@ void ACP_PlayerController::TertiaryAttack()
 	ActivateAbility(CP_Tags::CPAbilities::Tertiary);
 }
 
+bool ACP_PlayerController::IsAlive() const
+{
+	ACP_BaseCharacter* BaseCharacter = Cast<ACP_BaseCharacter>(GetPawn());
+	if (!IsValid(BaseCharacter))return false;
+	return BaseCharacter->IsAlive();
+}

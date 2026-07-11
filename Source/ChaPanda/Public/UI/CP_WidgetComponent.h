@@ -5,12 +5,11 @@
 #include "CoreMinimal.h"
 #include "Components/WidgetComponent.h"
 #include "AttributeSet.h"
-#include "Character/CP_BaseCharacter.h"
-#include "AbilitySystem/CP_AbilitySystemComponent.h"
-#include "AbilitySystem/CP_AttributeSet.h"
 #include "CP_WidgetComponent.generated.h"
 
 class UAbilitySystemComponent;
+class UCP_AttributeSet;
+class UCP_AbilitySystemComponent;
 class ACP_BaseCharacter;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -43,7 +42,5 @@ private:
 
 	UFUNCTION()
 	void BindToAttributeChanges();
-
-
 
 };

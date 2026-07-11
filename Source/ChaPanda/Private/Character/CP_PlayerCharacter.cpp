@@ -74,7 +74,7 @@ void ACP_PlayerCharacter::PossessedBy(AController* NewController)
 
 	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
 	if (!IsValid(CP_AttributeSet))return;
-	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelagate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 void ACP_PlayerCharacter::OnRep_PlayerState()
@@ -89,5 +89,5 @@ void ACP_PlayerCharacter::OnRep_PlayerState()
 	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
 	if (!IsValid(CP_AttributeSet))return;
 
-	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelagate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 } 

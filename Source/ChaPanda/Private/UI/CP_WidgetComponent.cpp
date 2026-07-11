@@ -38,6 +38,7 @@ void UCP_WidgetComponent::BindWidgetToAttributeChanges(UWidget* WidgetObject, co
 		UCP_AttributeWidget* AttributeWidget = Cast<UCP_AttributeWidget>(WidgetObject);
 		if (!IsValid(AttributeWidget))return;
 		if (!AttributeWidget->MatchAttributes(Pair))return;
+		AttributeWidget->AvatarActor = ChaCharacter;
 
 		AttributeWidget->OnAttributeChange(Pair, AttributeSet.Get(), 0.0f);
 

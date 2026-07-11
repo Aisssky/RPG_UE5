@@ -25,7 +25,7 @@ void ACP_EnemyCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ThisClass, bIsBeingLauched);
+	DOREPLIFETIME(ThisClass, bIsBeingLaunched);
 }
 
 UAbilitySystemComponent* ACP_EnemyCharacter::GetAbilitySystemComponent() const
@@ -38,14 +38,9 @@ UAttributeSet* ACP_EnemyCharacter::GetAttributeSet() const
 	return AttributeSet;
 }
 
-float ACP_EnemyCharacter::GetTimelineLength()
-{
-	return 0.0f;
-}
-
 void ACP_EnemyCharacter::StopMovementUntilLanded()
 {
-	bIsBeingLauched = true;
+	bIsBeingLaunched = true;
 
 	AAIController* AIController = GetController<AAIController>();
 	if (!IsValid(AIController)) return;
@@ -76,10 +71,6 @@ void ACP_EnemyCharacter::BeginPlay()
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
-void ACP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)
-{
-}
-
 void ACP_EnemyCharacter::HandleDeath()
 {
 	Super::HandleDeath();
@@ -91,7 +82,7 @@ void ACP_EnemyCharacter::HandleDeath()
 
 void ACP_EnemyCharacter::EnableMovementOnLanded(const FHitResult& Hit)
 {
-	bIsBeingLauched = false;
+	bIsBeingLaunched = false;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, CP_Tags::Events::Enemy::EndAttack, FGameplayEventData());
-	LandedDalegate.RemoveAll(this);	
+	LandedDelegate.RemoveAll(this);	
 }

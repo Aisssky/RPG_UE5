@@ -40,7 +40,7 @@ void UCP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	}
 
-	if(Data.EvaluatedData.Attribute == GetManaAttribute() && GetHealth() <= 0.f)
+	if(Data.EvaluatedData.Attribute == GetHealthAttribute() && GetHealth() <= 0.f)
 	{
 		FGameplayEventData Payload;
 		Payload.Instigator = Data.Target.GetAvatarActor();

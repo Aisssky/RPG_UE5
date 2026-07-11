@@ -30,6 +30,10 @@ UAbilitySystemComponent* ACP_BaseCharacter::GetAbilitySystemComponent() const
 	return nullptr;
 }
 
+void ACP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)
+{
+}
+
 void ACP_BaseCharacter::HandleDeath()
 {
 	bAlive = false;
