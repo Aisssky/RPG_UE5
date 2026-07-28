@@ -15,15 +15,15 @@ namespace CP_Tags
 
 	namespace CPAbilities
 	{
-		UE_DEFINE_GAMEPLAY_TAG_COMMENT(ActivateOnGiven, "CPTags.CCAbilities.ActivateOnGiven", "Tag for Abilities that should activate immediately once given.")
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(ActivateOnGiven, "CPTags.CPAbilities.ActivateOnGiven", "Tag for Abilities that should activate immediately once given.")
 
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Primary, "CPTags.CCAbilities.Primary", "Tag for the Primary Ability")
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Secondary, "CPTags.CCAbilities.Secondary", "Tag for the Secondary Ability")
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Tertiary, "CPTags.CCAbilities.Tertiary", "Tag for the Tertiary Ability")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Primary, "CPTags.CPAbilities.Primary", "Tag for the Primary Ability")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Secondary, "CPTags.CPAbilities.Secondary", "Tag for the Secondary Ability")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Tertiary, "CPTags.CPAbilities.Tertiary", "Tag for the Tertiary Ability")
 
 			namespace Enemy
 		{
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attack, "CPTags.CCAbilities.Enemy.Attack", "Enemy Attack Tag")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attack, "CPTags.CPAbilities.Enemy.Attack", "Enemy Attack Tag")
 		}
 	}
 
