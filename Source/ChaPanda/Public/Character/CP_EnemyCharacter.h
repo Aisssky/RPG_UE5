@@ -21,7 +21,7 @@ public:
 	virtual UAttributeSet* GetAttributeSet() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cha|AI")
-	float AcceptanceRadius{ 500.f };
+	float AcceptanceRadius{ 130.f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cha|AI")
 	float MinAttackDelay{ .1f };
@@ -32,7 +32,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	float GetTimelineLength();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cha|AI")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	bool bIsBeingLaunched{ false };
 
 	void StopMovementUntilLanded();

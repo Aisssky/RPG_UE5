@@ -55,9 +55,13 @@ void ACP_EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UE_LOG(LogTemp, Warning, TEXT("[Enemy] BeginPlay body | Name=%s | HasAuthority=%d | NetMode=%d"),
+		*GetName(), HasAuthority(), (int32)GetNetMode());
+
 	if (!IsValid(GetAbilitySystemComponent()))return;
 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(this, this);
+	UE_LOG(LogTemp, Warning, TEXT("[Enemy]   -> InitAbilityActorInfo done, broadcasting OnASCInitialized"));
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 
 	if (!HasAuthority()) return;
@@ -65,7 +69,14 @@ void ACP_EnemyCharacter::BeginPlay()
 	GiveStartupAbilities();
 	InitializeAttributes();
 
+	// GE 已完全执行，所有属性值就绪，此时广播 OnAttributesInitialized
 	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
+	if (IsValid(CP_AttributeSet) && CP_AttributeSet->bAttributesInitialized)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Enemy]   -> InitializeAttributes done, broadcasting OnAttributesInitialized (Health=%.1f, MaxHealth=%.1f)"),
+			CP_AttributeSet->GetHealth(), CP_AttributeSet->GetMaxHealth());
+		CP_AttributeSet->OnAttributesInitialized.Broadcast();
+	}
 	if (!IsValid(CP_AttributeSet)) return;
 
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);

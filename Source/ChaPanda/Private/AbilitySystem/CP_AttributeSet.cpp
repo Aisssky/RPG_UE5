@@ -8,6 +8,8 @@
 #include "GameplayTags/CP_Tags.h"
 #include "Net/UnrealNetwork.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogCPAttributeSet, Log, All);
+
 void UCP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -24,11 +26,7 @@ void UCP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if(!bAttributesInitialized)
-	{
-		bAttributesInitialized = true;
-		OnAttributesInitialized.Broadcast();
-	}
+
 
 	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
@@ -44,25 +42,43 @@ void UCP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	{
 		FGameplayEventData Payload;
 		Payload.Instigator = Data.Target.GetAvatarActor();
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Data.EffectSpec.GetEffectContext().GetInstigator(), CP_Tags::Events::KillScored, Payload);	
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Data.EffectSpec.GetEffectContext().GetInstigator(), CP_Tags::Events::KillScored, Payload);
+	}
+
+	if (!bAttributesInitialized)
+	{
+		bAttributesInitialized = true;
+		UE_LOG(LogCPAttributeSet, Warning, TEXT("[CPAttributeSet] PostGameplayEffectExecute -> bAttributesInitialized=true (deferring broadcast to Character) | Owner=%s"),
+			Data.Target.GetAvatarActor() ? *Data.Target.GetAvatarActor()->GetName() : TEXT("NULL"));
 	}
 }
 
 void UCP_AttributeSet::OnRep_AttributesInitialized()
 {
+	UE_LOG(LogCPAttributeSet, Warning, TEXT("[CPAttributeSet] OnRep_AttributesInitialized | bAttributesInitialized=%d | Owner=%s"),
+		bAttributesInitialized,
+		GetOwningActor() ? *GetOwningActor()->GetName() : TEXT("NULL"));
+
 	if(bAttributesInitialized)
 	{
+		UE_LOG(LogCPAttributeSet, Warning, TEXT("[CPAttributeSet]   -> Broadcasting OnAttributesInitialized"));
 		OnAttributesInitialized.Broadcast();
 	}
 }
 
 void UCP_AttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue)
 {
+	UE_LOG(LogCPAttributeSet, Verbose, TEXT("[CPAttributeSet] OnRep_Health | Old=%.1f New=%.1f | Owner=%s"),
+		OldValue.GetCurrentValue(), Health.GetCurrentValue(),
+		GetOwningActor() ? *GetOwningActor()->GetName() : TEXT("NULL"));
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Health, OldValue);
 }
 
 void UCP_AttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 {
+	UE_LOG(LogCPAttributeSet, Verbose, TEXT("[CPAttributeSet] OnRep_MaxHealth | Old=%.1f New=%.1f | Owner=%s"),
+		OldValue.GetCurrentValue(), MaxHealth.GetCurrentValue(),
+		GetOwningActor() ? *GetOwningActor()->GetName() : TEXT("NULL"));
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxHealth, OldValue);
 }
 

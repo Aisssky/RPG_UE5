@@ -49,7 +49,7 @@ public:
 		FGameplayEventData& Payload, const FGameplayTag& DataTag, float Damage, const FGameplayTag& EventTagOverride, UObject* OptionalParticleSystem = nullptr);
 	
 	UFUNCTION(BlueprintCallable,Category = "Cha|Abilities")
-	static TArray<AActor*> HotBoxOverlapTest(AActor* AvatarActor, float HitBoxRadius, float HitBoxForwardOffset = 0.f, float HitBoxElevationOssset = 0.f, bool bDrawDebugs = false);
+	static TArray<AActor*> HitBoxOverlapTest(AActor* AvatarActor, float HitBoxRadius, float HitBoxForwardOffset = 0.f, float HitBoxElevationOssset = 0.f, bool bDrawDebugs = false);
 
 	static void DrawHitBoxOverlapDebugs(const UObject* WorldContextObject, const TArray<FOverlapResult>& OverlapResults,const FVector& HitBoxLocation, float HitBoxRadius);
 	

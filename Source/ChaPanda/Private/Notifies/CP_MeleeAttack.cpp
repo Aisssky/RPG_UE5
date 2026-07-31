@@ -34,7 +34,7 @@ TArray<FHitResult> UCP_MeleeAttack::PerformSphereTrace(USkeletalMeshComponent* M
     Params.AddIgnoredActor(MeshComp->GetOwner());
     FCollisionResponseParams ResponseParams;
     ResponseParams.CollisionResponse.SetAllChannels(ECR_Ignore);
-    ResponseParams.CollisionResponse.SetResponse(ECC_Pawn, ECR_Ignore);
+    ResponseParams.CollisionResponse.SetResponse(ECC_Pawn, ECR_Block);
     UWorld* World = GEngine->GetWorldFromContextObject(MeshComp,EGetWorldErrorMode::LogAndReturnNull);
 
     if (!IsValid(World))return OutHits;

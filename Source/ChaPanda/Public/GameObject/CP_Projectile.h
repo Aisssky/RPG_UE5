@@ -19,8 +19,8 @@ public:
 	ACP_Projectile();
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Crash|Damage",meta=(ExposeOnSpawn,ClampMin="0.0"))
-	float Damage{ -25.f };
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Cha|Damage",meta=(ExposeOnSpawn,ClampMin="0.0"))
+	float Damage{ 25.f };
 
 	UFUNCTION(BlueprintImplementableEvent,Category="Cha|Projectile")
 	void SpawnImpactEffects();
@@ -30,7 +30,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Cha|Projectile")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, Category = "Cha|Damage")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 };

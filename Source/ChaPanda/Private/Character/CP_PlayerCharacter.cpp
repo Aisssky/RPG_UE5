@@ -41,6 +41,7 @@ ACP_PlayerCharacter::ACP_PlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	Tags.Add(ChaTags::Player);
 }
 
 UAbilitySystemComponent* ACP_PlayerCharacter::GetAbilitySystemComponent() const
@@ -72,7 +73,12 @@ void ACP_PlayerCharacter::PossessedBy(AController* NewController)
 	GiveStartupAbilities();
 	InitializeAttributes();
 
+	// GE 已完全执行，所有属性值就绪，此时广播 OnAttributesInitialized
 	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
+	if (IsValid(CP_AttributeSet) && CP_AttributeSet->bAttributesInitialized)
+	{
+		CP_AttributeSet->OnAttributesInitialized.Broadcast();
+	}
 	if (!IsValid(CP_AttributeSet))return;
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 }

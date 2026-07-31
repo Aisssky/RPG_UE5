@@ -13,10 +13,10 @@ class CHAPANDA_API UCP_HitReact : public UCP_GameplayAbility
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cha|Abilities")
-	void CachedHitDirectionVectors(AActor* Instigator);
+	void CacheHitDirectionVectors(AActor* Instigator);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Cha|Abilities")
-	FVector AvatorForward;
+	FVector AvatarForward;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Cha|Abilities")
 	FVector ToInstigator;

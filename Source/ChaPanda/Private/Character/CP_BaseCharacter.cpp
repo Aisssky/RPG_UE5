@@ -32,6 +32,10 @@ UAbilitySystemComponent* ACP_BaseCharacter::GetAbilitySystemComponent() const
 
 void ACP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)
 {
+	if(AttributeChangeData.NewValue <= 0.f && bAlive)
+	{
+		HandleDeath();
+	}
 }
 
 void ACP_BaseCharacter::HandleDeath()
@@ -50,7 +54,7 @@ void ACP_BaseCharacter::GiveStartupAbilities()
 	if (!IsValid(GetAbilitySystemComponent()) || !HasAuthority())return;
 	for(const auto& Ability : StartupAbilities)
 	{
-		if (!IsValid(Ability))return;
+		if (!IsValid(Ability))continue;
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
 		GetAbilitySystemComponent()->GiveAbility(AbilitySpec);
 	}

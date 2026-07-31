@@ -3,9 +3,9 @@
 
 #include "AbilitySystem/Abilities/Enemy/CP_HitReact.h"
 
-void UCP_HitReact::CachedHitDirectionVectors(AActor* Instigator)
+void UCP_HitReact::CacheHitDirectionVectors(AActor* Instigator)
 {
-	AvatorForward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+	AvatarForward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
 
 	const FVector AvatarLocation = GetAvatarActorFromActorInfo()->GetActorLocation();
 	const FVector InstigatorLocation = Instigator->GetActorLocation();

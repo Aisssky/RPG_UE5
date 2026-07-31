@@ -15,7 +15,7 @@
 
 UCP_SearchForTarget::UCP_SearchForTarget()
 {
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerExecution;
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerOnly;
 }
 
@@ -24,9 +24,16 @@ void UCP_SearchForTarget::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	OwningEnemy = Cast<ACP_EnemyCharacter>(GetAvatarActorFromActorInfo());
-	check(OwningEnemy.IsValid());
+	if (!OwningEnemy.IsValid())
+	{
+		return;
+	}
 	OwningAIController = Cast<AAIController>(OwningEnemy->GetController());
-	check(OwningAIController.IsValid());
+	if (!OwningAIController.IsValid())
+	{
+		return;
+	}
+
 	StartSearch();
 
 	WaitGameplayEventTask = UCP_WaitGameplayEvent::WaitGameplayEventToActorProxy(GetAvatarActorFromActorInfo(), CP_Tags::Events::Enemy::EndAttack);
@@ -39,22 +46,22 @@ void UCP_SearchForTarget::StartSearch()
 	if (bDrawDebugs) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Start Search"));
 	if (!OwningEnemy.IsValid()) return;
 
-	const float SearchDelay = FMath::RandRange(OwningEnemy->MinAttackDelay, OwningEnemy->MaxAttackDelay);	
+	const float SearchDelay = FMath::RandRange(OwningEnemy->MinAttackDelay, OwningEnemy->MaxAttackDelay);
 	SearchDelayTask = UAbilityTask_WaitDelay::WaitDelay(this, SearchDelay);
 	SearchDelayTask->OnFinish.AddDynamic(this, &ThisClass::Search);
-	SearchDelayTask->ReadyForActivation();
+	SearchDelayTask->Activate();
 }
 
 
 void UCP_SearchForTarget::Search()
 {
 
-	const FVector SearchOrigin = GetAvatarActorFromActorInfo()->GetActorLocation();	
+	const FVector SearchOrigin = GetAvatarActorFromActorInfo()->GetActorLocation();
 	if (!OwningEnemy.IsValid()) return;
 	FClosestActorWithTagResult ClosestActorResult = UCP_BlueprintFunctionLibrary::FindClosestActorWithTag(GetAvatarActorFromActorInfo(), SearchOrigin, ChaTags::Player, OwningEnemy->SearchRange);
 
 	TargetBaseCharacter = Cast<ACP_BaseCharacter>(ClosestActorResult.Actor);
-	
+
 	if (!TargetBaseCharacter.IsValid())
 	{
 		StartSearch();
@@ -81,7 +88,8 @@ void UCP_SearchForTarget::EndAttackEventReceived(FGameplayEventData Payload)
 
 void UCP_SearchForTarget::MoveToTargetandAttack()
 {
-	if (!OwningAIController.IsValid() ||!OwningAIController.IsValid()|| !TargetBaseCharacter.IsValid()) return;
+
+	if (!OwningAIController.IsValid() || !TargetBaseCharacter.IsValid()) return;
 
 	if (!OwningEnemy->IsAlive())
 	{
@@ -93,6 +101,8 @@ void UCP_SearchForTarget::MoveToTargetandAttack()
 		FVector(),
 		TargetBaseCharacter.Get(),
 		OwningEnemy->AcceptanceRadius);
+
+	
 
 	MoveToLocationOrActorTask->OnMoveTaskFinished.AddUObject(this, &ThisClass::AttackTarget);
 	MoveToLocationOrActorTask->ConditionalPerformMove();
