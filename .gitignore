@@ -76,3 +76,6 @@ DerivedDataCache/*
 
 # Project documentation (not tracked)
 doc/
+
+# Content assets (copyright, not tracked)
+Content/
