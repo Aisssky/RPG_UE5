@@ -42,18 +42,18 @@ public:
 	static FClosestActorWithTagResult FindClosestActorWithTag(UObject* WorldContextObject, const FVector& Origin, const FName& Tag, float SearchRange);
 
 	UFUNCTION(BlueprintCallable)
-	static void SendDamageEventToPlayers(TArray<AActor*> Targets, const TSubclassOf<UGameplayEffect>& DamageEffect,FGameplayEventData& Payload,const FGameplayTag& DataTag, float Damage,const FGameplayTag& EventTagOverride,UObject* OptionalParticleSystem = nullptr);
+	static void SendDamageEventToPlayers(TArray<AActor*> Targets, const TSubclassOf<UGameplayEffect>& DamageEffect, UPARAM(ref) FGameplayEventData& Payload,const FGameplayTag& DataTag, float Damage,const FGameplayTag& EventTagOverride,UObject* OptionalParticleSystem = nullptr);
 
 	UFUNCTION(BlueprintCallable)
 	static void SendDamageEventToPlayer(AActor* Target, const TSubclassOf<UGameplayEffect>& DamageEffect,
-		FGameplayEventData& Payload, const FGameplayTag& DataTag, float Damage, const FGameplayTag& EventTagOverride, UObject* OptionalParticleSystem = nullptr);
+		UPARAM(ref) FGameplayEventData& Payload, const FGameplayTag& DataTag, float Damage, const FGameplayTag& EventTagOverride, UObject* OptionalParticleSystem = nullptr);
 	
 	UFUNCTION(BlueprintCallable,Category = "Cha|Abilities")
 	static TArray<AActor*> HitBoxOverlapTest(AActor* AvatarActor, float HitBoxRadius, float HitBoxForwardOffset = 0.f, float HitBoxElevationOssset = 0.f, bool bDrawDebugs = false);
 
 	static void DrawHitBoxOverlapDebugs(const UObject* WorldContextObject, const TArray<FOverlapResult>& OverlapResults,const FVector& HitBoxLocation, float HitBoxRadius);
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	static TArray<AActor*> ApplyKnockback(AActor* AvatarActor, const TArray<AActor*>& HitActors, float InnerRadius, float OuterRadius, float LaunchForceMagnitude, float RotationAngle = 45.f, bool bDrawDebugs = false);
 
 };

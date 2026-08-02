@@ -16,15 +16,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Cha|Abilities")
 	void SendHitReactEventToActors(const TArray<AActor*>& ActorsHit);
 
-private:
+protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Cha|Abilities")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Cha|Abilities")
 	float HitBoxRadius = 100.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Cha|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cha|Abilities")
 	float HitBoxForwardOffset = 200.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Cha|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cha|Abilities")
 	float HitBoxElevationOffset = 20.0f;
 
 	void DrawHitBoxDebug(const TArray<FOverlapResult>& OverlapsResults,const FVector& HitBoxLocation) const; 

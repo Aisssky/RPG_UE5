@@ -82,7 +82,7 @@ FClosestActorWithTagResult UCP_BlueprintFunctionLibrary::FindClosestActorWithTag
 	return Result;
 }
 
-void UCP_BlueprintFunctionLibrary::SendDamageEventToPlayers(TArray<AActor*> Targets, const TSubclassOf<UGameplayEffect>& DamageEffect,FGameplayEventData& Payload, const FGameplayTag& DataTag, float Damage, const FGameplayTag& EventTagOverride, UObject* OptionalParticleSystem)
+void UCP_BlueprintFunctionLibrary::SendDamageEventToPlayers(TArray<AActor*> Targets, const TSubclassOf<UGameplayEffect>& DamageEffect, FGameplayEventData& Payload, const FGameplayTag& DataTag, float Damage, const FGameplayTag& EventTagOverride, UObject* OptionalParticleSystem)
 {
 
 	for (AActor* Target : Targets)
