@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameplayTagContainer.h"
 #include "CP_PlayerController.generated.h"
 
 
@@ -16,8 +17,15 @@ UCLASS()
 class CHAPANDA_API ACP_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
+public:
+	
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetSelectedHeroTag() const;
+
 protected:
 	virtual void SetupInputComponent() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 private:
 	 
 	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input")
@@ -41,6 +49,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input|Abilities")
 	TObjectPtr<UInputAction> TertiaryAction;
 
+	UPROPERTY(Replicated)
+	FGameplayTag SelectedHeroTag;
+	UFUNCTION(Server,Reliable)
+	void Server_SetSelectedHeroTag(const FGameplayTag& HeroTag);
+
+
 
 	void Jump();
 	void StopJumping();
@@ -62,4 +76,5 @@ private:
 
 	UFUNCTION(Client,Reliable)
 	void Client_NotifyAbilityRejected(const FGameplayTag& AbilityTag);
+
 };

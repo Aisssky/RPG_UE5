@@ -11,6 +11,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTags/CP_Tags.h"
 
+#include "Net/UnrealNetwork.h"
+
 
 
 void ACP_PlayerController::SetupInputComponent()
@@ -38,6 +40,16 @@ void ACP_PlayerController::SetupInputComponent()
 
 
 
+}
+void ACP_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACP_PlayerController, SelectedHeroTag);
+}
+void ACP_PlayerController::Server_SetSelectedHeroTag_Implementation(const FGameplayTag& HeroTag)
+{
+	if (!HeroTag.IsValid())return;
+	SelectedHeroTag = HeroTag;
 }
 void ACP_PlayerController::Jump()
 {
@@ -117,6 +129,11 @@ bool ACP_PlayerController::IsAlive() const
 	ACP_BaseCharacter* BaseCharacter = Cast<ACP_BaseCharacter>(GetPawn());
 	if (!IsValid(BaseCharacter))return false;
 	return BaseCharacter->IsAlive();
+}
+
+FGameplayTag ACP_PlayerController::GetSelectedHeroTag() const
+{
+	return SelectedHeroTag;
 }
 
 void ACP_PlayerController::Client_NotifyAbilityRejected_Implementation(const FGameplayTag& AbilityTag)

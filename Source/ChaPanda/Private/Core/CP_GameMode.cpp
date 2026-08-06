@@ -40,3 +40,21 @@ void ACP_GameMode::Logout(AController* Exiting)
 	UE_LOG(LogTemp, Warning, TEXT("[GameMode] Logout | Player=%s | NumPlayers=%d"),
 		*Exiting->GetName(), GetNumPlayers());
 }
+
+UClass* ACP_GameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	const ACP_PlayerController* PC=Cast<ACP_PlayerController>(InController);
+	if(!IsValid(PC)) {
+		return Super::GetDefaultPawnClassForController_Implementation(InController);
+	}
+
+	const FGameplayTag SelectedHeroTag = PC->GetSelectedHeroTag();
+	if(!SelectedHeroTag.IsValid()) {
+		return Super::GetDefaultPawnClassForController_Implementation(InController);
+	}
+
+	if(const TSubclassOf<APawn>* FoundClass = HeroPawnClasses.Find(SelectedHeroTag)) {
+		return *FoundClass;
+	}
+	return Super::GetDefaultPawnClassForController_Implementation(InController);
+}
