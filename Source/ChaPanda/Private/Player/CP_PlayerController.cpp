@@ -5,7 +5,6 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-
 #include "AbilitySystemComponent.h"
 #include "Character/CP_BaseCharacter.h"
 #include "GameFramework/Character.h"
@@ -89,6 +88,13 @@ void ACP_PlayerController::PrimaryAttack()
 void ACP_PlayerController::ActivateAbility(const FGameplayTag& AbilityTag) const
 {
 	if (!IsAlive())return;
+
+	if (GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		const_cast<ACP_PlayerController*>(this)->Server_ActivateAbility(AbilityTag);
+		return;
+	}
+
 	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
 	if (!IsValid(ASC))return;
 
@@ -111,4 +117,44 @@ bool ACP_PlayerController::IsAlive() const
 	ACP_BaseCharacter* BaseCharacter = Cast<ACP_BaseCharacter>(GetPawn());
 	if (!IsValid(BaseCharacter))return false;
 	return BaseCharacter->IsAlive();
+}
+
+void ACP_PlayerController::Client_NotifyAbilityRejected_Implementation(const FGameplayTag& AbilityTag)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[RPC] Ability rejected by server: %s"), *AbilityTag.ToString());
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
+			FString::Printf(TEXT("Server rejected: %s"), *AbilityTag.ToString()));
+	}
+}
+
+void ACP_PlayerController::Server_ActivateAbility_Implementation(const FGameplayTag& AbilityTag)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[RPC] Server received ability request: %s"), *AbilityTag.ToString());
+
+	if (!AbilityTag.IsValid())return;
+	if (!IsAlive())return;
+
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
+	if (!IsValid(ASC)) return;
+
+	bool bSuccess = ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+
+	// 如果失败，通知这个客户端
+	if (!bSuccess)
+	{
+		Client_NotifyAbilityRejected(AbilityTag);
+	}
+}
+
+bool ACP_PlayerController::Server_ActivateAbility_Validate(const FGameplayTag& AbilityTag)
+{
+	if(!AbilityTag.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("[RPC Validate] Invalid tag! Possible cheat attempt."));
+		return false;
+	}
+	return true;
 }

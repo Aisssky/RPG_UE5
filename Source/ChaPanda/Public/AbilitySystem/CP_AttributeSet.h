@@ -45,7 +45,20 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Attack)
+	FGameplayAttributeData Attack;
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Defense)
+	FGameplayAttributeData Defense;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CritRate)
+	FGameplayAttributeData CritRate;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CritDamage)
+	FGameplayAttributeData CritDamage;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MoveSpeed)
+	FGameplayAttributeData MoveSpeed;
 
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
@@ -59,10 +72,31 @@ public:
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldValue);
 
+
+	UFUNCTION()
+	void OnRep_Attack(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	void OnRep_Defense(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	void OnRep_CritRate(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	void OnRep_CritDamage(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	void OnRep_MoveSpeed(const FGameplayAttributeData& OldValue);
+
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Mana);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxMana);
+	ATTRIBUTE_ACCESSORS(ThisClass, Attack);
+	ATTRIBUTE_ACCESSORS(ThisClass, Defense);
+	ATTRIBUTE_ACCESSORS(ThisClass, CritRate);
+	ATTRIBUTE_ACCESSORS(ThisClass, CritDamage);
+	ATTRIBUTE_ACCESSORS(ThisClass, MoveSpeed);
 
 
 };

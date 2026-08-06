@@ -4,15 +4,13 @@
 #include "Utils/CP_BlueprintFunctionLibrary.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "InterchangeTranslatorBase.h"
-#include "ToolContextInterfaces.h"
 #include "AbilitySystem/CP_AttributeSet.h"
 #include "Character/CP_BaseCharacter.h"
 #include "Character/CP_EnemyCharacter.h"
 #include "GameplayTags/CP_Tags.h"
 #include "Engine/OverlapResult.h"
+#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
-#include "Chaos/Deformable/ChaosDeformableSolverProxy.h"
 
 EHitDirection UCP_BlueprintFunctionLibrary::GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator)
 {
@@ -232,3 +230,4 @@ TArray<AActor*> UCP_BlueprintFunctionLibrary::ApplyKnockback(AActor* AvatarActor
 	}
 	return HitActors;
 }
+

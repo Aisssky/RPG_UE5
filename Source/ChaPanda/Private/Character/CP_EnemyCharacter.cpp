@@ -13,7 +13,7 @@
 ACP_EnemyCharacter::ACP_EnemyCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	AbilitySystemComponent = CreateDefaultSubobject<UCP_AbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
@@ -69,11 +69,14 @@ void ACP_EnemyCharacter::BeginPlay()
 	GiveStartupAbilities();
 	InitializeAttributes();
 
-	// GE 已完全执行，所有属性值就绪，此时广播 OnAttributesInitialized
+	// All GE modifiers applied — clamp, mark initialized, broadcast
 	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
-	if (IsValid(CP_AttributeSet) && CP_AttributeSet->bAttributesInitialized)
+	if (IsValid(CP_AttributeSet) && !CP_AttributeSet->bAttributesInitialized)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[Enemy]   -> InitializeAttributes done, broadcasting OnAttributesInitialized (Health=%.1f, MaxHealth=%.1f)"),
+		CP_AttributeSet->bAttributesInitialized = true;
+		CP_AttributeSet->SetHealth(FMath::Clamp(CP_AttributeSet->GetHealth(), 0.0f, CP_AttributeSet->GetMaxHealth()));
+		CP_AttributeSet->SetMana(FMath::Clamp(CP_AttributeSet->GetMana(), 0.0f, CP_AttributeSet->GetMaxMana()));
+		UE_LOG(LogTemp, Warning, TEXT("[Enemy] InitializeAttributes done, broadcasting OnAttributesInitialized (Health=%.1f, MaxHealth=%.1f)"),
 			CP_AttributeSet->GetHealth(), CP_AttributeSet->GetMaxHealth());
 		CP_AttributeSet->OnAttributesInitialized.Broadcast();
 	}
@@ -95,5 +98,5 @@ void ACP_EnemyCharacter::EnableMovementOnLanded(const FHitResult& Hit)
 {
 	bIsBeingLaunched = false;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, CP_Tags::Events::Enemy::EndAttack, FGameplayEventData());
-	LandedDelegate.RemoveAll(this);	
+	LandedDelegate.RemoveAll(this);
 }

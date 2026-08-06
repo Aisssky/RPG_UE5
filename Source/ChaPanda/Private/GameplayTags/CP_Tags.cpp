@@ -10,7 +10,7 @@ namespace CP_Tags
 		namespace SetByCaller
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Projectile, "CPTags.SetByCaller.Projectile", "Tag for Set by Caller Magnitude for Projectiles")
-
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage, "CPTags.SetByCaller.Damage", "Tag for Set by Caller Magnitude for Damage")
 	}
 
 	namespace CPAbilities

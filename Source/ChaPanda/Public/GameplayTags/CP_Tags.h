@@ -12,6 +12,7 @@ namespace CP_Tags
 	namespace SetByCaller
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Projectile);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage);
 	}
 
 	namespace CPAbilities

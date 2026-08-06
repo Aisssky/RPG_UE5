@@ -6,9 +6,9 @@
 void UCP_AttributeWidget::OnAttributeChange(const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair, UCP_AttributeSet* AttributeSet, float OldValue)
 {
 	const float AttributeValue = Pair.Key.GetNumericValue(AttributeSet);
-	const float MaxAttributeValue = Pair.Value.GetNumericValue(AttributeSet);	
-	
-	BP_OnAttributeChanged(AttributeValue, MaxAttributeValue,OldValue);
+	const float MaxAttributeValue = Pair.Value.GetNumericValue(AttributeSet);
+
+	BP_OnAttributeChanged(AttributeValue, MaxAttributeValue, OldValue);
 }
 
 bool UCP_AttributeWidget::MatchAttributes(const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair) const

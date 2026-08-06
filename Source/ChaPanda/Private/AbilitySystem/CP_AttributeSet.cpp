@@ -17,7 +17,11 @@ void UCP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Mana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxMana, COND_None, REPNOTIFY_Always);
-
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Defense, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, CritRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, CritDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MoveSpeed, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Attack, COND_None, REPNOTIFY_Always);
 
 	DOREPLIFETIME(ThisClass, bAttributesInitialized);
 }
@@ -26,16 +30,20 @@ void UCP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 {
 	Super::PostGameplayEffectExecute(Data);
 
-
-
-	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
+	// Only clamp after initialization — during init, MaxHealth may not be set yet
+	if (bAttributesInitialized)
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
-	}
+		if(Data.EvaluatedData.Attribute == GetHealthAttribute())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AttrSet] Health GE executed | Before=%.1f | Modifier=%.2f | AfterClamp=%.1f | Effect=%s"),
+				GetHealth(), Data.EvaluatedData.Magnitude, FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()), *Data.EffectSpec.Def->GetName());
+			SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		}
 
-	if(Data.EvaluatedData.Attribute == GetManaAttribute())
-	{
-		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+		if(Data.EvaluatedData.Attribute == GetManaAttribute())
+		{
+			SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+		}
 	}
 
 	if(Data.EvaluatedData.Attribute == GetHealthAttribute() && GetHealth() <= 0.f)
@@ -43,13 +51,6 @@ void UCP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		FGameplayEventData Payload;
 		Payload.Instigator = Data.Target.GetAvatarActor();
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Data.EffectSpec.GetEffectContext().GetInstigator(), CP_Tags::Events::KillScored, Payload);
-	}
-
-	if (!bAttributesInitialized)
-	{
-		bAttributesInitialized = true;
-		UE_LOG(LogCPAttributeSet, Warning, TEXT("[CPAttributeSet] PostGameplayEffectExecute -> bAttributesInitialized=true (deferring broadcast to Character) | Owner=%s"),
-			Data.Target.GetAvatarActor() ? *Data.Target.GetAvatarActor()->GetName() : TEXT("NULL"));
 	}
 }
 
@@ -91,3 +92,29 @@ void UCP_AttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxMana, OldValue);
 }
+
+void UCP_AttributeSet::OnRep_Attack(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Attack, OldValue);
+}
+
+void UCP_AttributeSet::OnRep_Defense(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Defense, OldValue);
+}
+
+void UCP_AttributeSet::OnRep_CritRate(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, CritRate, OldValue);
+}
+
+void UCP_AttributeSet::OnRep_CritDamage(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, CritDamage, OldValue);
+}
+
+void UCP_AttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MoveSpeed, OldValue);
+}
+

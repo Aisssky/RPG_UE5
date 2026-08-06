@@ -56,4 +56,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static TArray<AActor*> ApplyKnockback(AActor* AvatarActor, const TArray<AActor*>& HitActors, float InnerRadius, float OuterRadius, float LaunchForceMagnitude, float RotationAngle = 45.f, bool bDrawDebugs = false);
 
+	
 };

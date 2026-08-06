@@ -1,4 +1,4 @@
-﻿// Copyright Aisssky
+// Copyright Aisssky
 
 
 #include "Character/CP_PlayerCharacter.h"
@@ -20,10 +20,10 @@ ACP_PlayerCharacter::ACP_PlayerCharacter()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;	
-	bUseControllerRotationRoll = false;	
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;	
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.35f;
@@ -73,10 +73,13 @@ void ACP_PlayerCharacter::PossessedBy(AController* NewController)
 	GiveStartupAbilities();
 	InitializeAttributes();
 
-	// GE 已完全执行，所有属性值就绪，此时广播 OnAttributesInitialized
+	// All GE modifiers applied — clamp, mark initialized, broadcast
 	UCP_AttributeSet* CP_AttributeSet = Cast<UCP_AttributeSet>(GetAttributeSet());
-	if (IsValid(CP_AttributeSet) && CP_AttributeSet->bAttributesInitialized)
+	if (IsValid(CP_AttributeSet) && !CP_AttributeSet->bAttributesInitialized)
 	{
+		CP_AttributeSet->bAttributesInitialized = true;
+		CP_AttributeSet->SetHealth(FMath::Clamp(CP_AttributeSet->GetHealth(), 0.0f, CP_AttributeSet->GetMaxHealth()));
+		CP_AttributeSet->SetMana(FMath::Clamp(CP_AttributeSet->GetMana(), 0.0f, CP_AttributeSet->GetMaxMana()));
 		CP_AttributeSet->OnAttributesInitialized.Broadcast();
 	}
 	if (!IsValid(CP_AttributeSet))return;
@@ -96,4 +99,4 @@ void ACP_PlayerCharacter::OnRep_PlayerState()
 	if (!IsValid(CP_AttributeSet))return;
 
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(CP_AttributeSet->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
-} 
+}

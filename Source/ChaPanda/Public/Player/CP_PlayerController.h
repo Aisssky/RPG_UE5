@@ -54,4 +54,12 @@ private:
 	void TertiaryAttack();
 
 	bool IsAlive() const;
+
+
+	//RPC
+	UFUNCTION(Server,Reliable,WithValidation)
+	void Server_ActivateAbility(const FGameplayTag& AbilityTag);
+
+	UFUNCTION(Client,Reliable)
+	void Client_NotifyAbilityRejected(const FGameplayTag& AbilityTag);
 };

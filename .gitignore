@@ -77,5 +77,5 @@ DerivedDataCache/*
 # Project documentation (not tracked)
 doc/
 
-# Content assets (copyright, not tracked)
-Content/
+# Content assets - tracked locally but NOT pushed
+.claude/

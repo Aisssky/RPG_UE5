@@ -31,9 +31,10 @@ private:
 	TWeakObjectPtr<UCP_AbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<UCP_AttributeSet> AttributeSet;
 
-	
+	bool bAttributesBound = false;
+
 	void InitAbilitySystemData();
-	bool IsASCInitialized() const ; 
+	bool IsASCInitialized() const ;
 	void InitializeAttributeDelegete();
 	void BindWidgetToAttributeChanges(UWidget* WidgetObject, const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair) const;
 
