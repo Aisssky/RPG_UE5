@@ -49,6 +49,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input|Abilities")
 	TObjectPtr<UInputAction> TertiaryAction;
 
+	UPROPERTY(EditDefaultsOnly,Category="Cha|Input|Abilities")
+	TObjectPtr<UInputAction> QAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input|Abilities")
+	TObjectPtr<UInputAction> RAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input|Abilities")
+	TObjectPtr<UInputAction> EAction;
+
 	UPROPERTY(Replicated)
 	FGameplayTag SelectedHeroTag;
 	UFUNCTION(Server,Reliable)
@@ -66,6 +75,10 @@ private:
 	void ActivateAbility(const FGameplayTag& AbilityTag) const;
 	void SecondaryAttack();
 	void TertiaryAttack();
+
+	void QAbility();
+	void RAbility();
+	void EAbility();
 
 	bool IsAlive() const;
 

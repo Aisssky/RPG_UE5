@@ -37,8 +37,9 @@ void ACP_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(PrimaryAction, ETriggerEvent::Started, this, &ACP_PlayerController::PrimaryAttack);
 	EnhancedInputComponent->BindAction(SecondaryAction, ETriggerEvent::Started, this, &ACP_PlayerController::SecondaryAttack);
 	EnhancedInputComponent->BindAction(TertiaryAction, ETriggerEvent::Started, this, &ACP_PlayerController::TertiaryAttack);
-
-
+	EnhancedInputComponent->BindAction(QAction, ETriggerEvent::Started, this, &ACP_PlayerController::QAbility);
+	EnhancedInputComponent->BindAction(RAction, ETriggerEvent::Started, this, &ACP_PlayerController::RAbility);
+	EnhancedInputComponent->BindAction(EAction, ETriggerEvent::Started, this, &ACP_PlayerController::EAbility);
 
 }
 void ACP_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -122,6 +123,19 @@ void ACP_PlayerController::SecondaryAttack()
 void ACP_PlayerController::TertiaryAttack()
 {
 	ActivateAbility(CP_Tags::CPAbilities::Tertiary);
+}
+
+void ACP_PlayerController::QAbility()
+{
+	ActivateAbility(CP_Tags::CPAbilities::Shared::Q);
+}
+
+void ACP_PlayerController::RAbility()
+{
+}
+
+void ACP_PlayerController::EAbility()
+{
 }
 
 bool ACP_PlayerController::IsAlive() const

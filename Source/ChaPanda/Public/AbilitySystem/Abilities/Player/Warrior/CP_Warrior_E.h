@@ -13,5 +13,7 @@ UCLASS()
 class CHAPANDA_API UCP_Warrior_E : public UCP_GameplayAbility
 {
 	GENERATED_BODY()
+
+
 	
 };
