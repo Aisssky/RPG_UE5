@@ -4,13 +4,18 @@
 #include "Core/CP_GameMode.h"
 #include "Character/CP_PlayerCharacter.h"
 #include "Player/CP_PlayerController.h"
+#include "Core/CP_GameState.h"
 #include "Player/CP_PlayerState.h"
+#include "Core/CP_LobbyGameMode.h"
 
 ACP_GameMode::ACP_GameMode()
 {
 	PlayerControllerClass = ACP_PlayerController::StaticClass();
 	PlayerStateClass = ACP_PlayerState::StaticClass();
+	GameStateClass = ACP_GameState::StaticClass();
 	DefaultPawnClass = ACP_PlayerCharacter::StaticClass();
+
+	bDelayedStart = true;
 }
 
 void ACP_GameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
@@ -41,6 +46,9 @@ void ACP_GameMode::Logout(AController* Exiting)
 		*Exiting->GetName(), GetNumPlayers());
 }
 
+
+
+
 UClass* ACP_GameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
 	const ACP_PlayerController* PC=Cast<ACP_PlayerController>(InController);
@@ -58,3 +66,4 @@ UClass* ACP_GameMode::GetDefaultPawnClassForController_Implementation(AControlle
 	}
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
+

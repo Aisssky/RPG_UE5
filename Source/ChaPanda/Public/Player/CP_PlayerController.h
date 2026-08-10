@@ -58,12 +58,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input|Abilities")
 	TObjectPtr<UInputAction> EAction;
 
-	UPROPERTY(Replicated)
-	FGameplayTag SelectedHeroTag;
 	UFUNCTION(Server,Reliable)
-	void Server_SetSelectedHeroTag(const FGameplayTag& HeroTag);
+	void Server_SelectedHero(const FGameplayTag& HeroTag);
 
+	UFUNCTION(Server, Reliable)
+	void Server_LockedInHero();
 
+	UFUNCTION(Server,Reliable)
+	void Server_StartGame(const FString& MapName);
 
 	void Jump();
 	void StopJumping();
@@ -78,7 +80,9 @@ private:
 
 	void QAbility();
 	void RAbility();
+
 	void EAbility();
+	void EAbilityReleased();
 
 	bool IsAlive() const;
 
@@ -89,5 +93,6 @@ private:
 
 	UFUNCTION(Client,Reliable)
 	void Client_NotifyAbilityRejected(const FGameplayTag& AbilityTag);
+
 
 };

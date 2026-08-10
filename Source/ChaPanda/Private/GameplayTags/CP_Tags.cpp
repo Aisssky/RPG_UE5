@@ -7,6 +7,14 @@ namespace CP_Tags
 {
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(None, "CPTags.None", "None")
 
+		namespace GamePhase
+	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Lobby, "CPTags.GamePhase.Lobby","waiting for players to join");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(CharacterSelect, "CPTags.GamePhase.CharacterSelect","Hero selection phase");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(PreGame, "CPTags.GamePhase.PreGame","Pre-game countdown before match starts");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(InProgress, "CPTags.GamePhase.InProgress","Match in progress");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(PostGame, "CPTags.GamePhase.PostGame","results screen");
+	}
 		namespace SetByCaller
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Projectile, "CPTags.SetByCaller.Projectile", "Tag for Set by Caller Magnitude for Projectiles")

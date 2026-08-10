@@ -57,3 +57,16 @@ void UCP_AbilitySystemComponent::HandleActivateAbility(const FGameplayAbilitySpe
         }
     }
 }
+
+void UCP_AbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
+{
+    Super::AbilitySpecInputPressed(Spec);
+    InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+
+}
+
+void UCP_AbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
+{
+    Super::AbilitySpecInputReleased(Spec);
+    InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+}

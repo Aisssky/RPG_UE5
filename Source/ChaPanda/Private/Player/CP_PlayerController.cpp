@@ -10,9 +10,9 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTags/CP_Tags.h"
-
+#include "Player/CP_PlayerState.h"
 #include "Net/UnrealNetwork.h"
-
+#include "Core/CP_LobbyGameMode.h"
 
 
 void ACP_PlayerController::SetupInputComponent()
@@ -39,19 +39,37 @@ void ACP_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(TertiaryAction, ETriggerEvent::Started, this, &ACP_PlayerController::TertiaryAttack);
 	EnhancedInputComponent->BindAction(QAction, ETriggerEvent::Started, this, &ACP_PlayerController::QAbility);
 	EnhancedInputComponent->BindAction(RAction, ETriggerEvent::Started, this, &ACP_PlayerController::RAbility);
-	EnhancedInputComponent->BindAction(EAction, ETriggerEvent::Started, this, &ACP_PlayerController::EAbility);
 
+	EnhancedInputComponent->BindAction(EAction, ETriggerEvent::Started, this, &ACP_PlayerController::EAbility);
+	EnhancedInputComponent->BindAction(EAction, ETriggerEvent::Completed, this, &ACP_PlayerController::EAbilityReleased);
 }
 void ACP_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ACP_PlayerController, SelectedHeroTag);
 }
-void ACP_PlayerController::Server_SetSelectedHeroTag_Implementation(const FGameplayTag& HeroTag)
+
+void ACP_PlayerController::Server_SelectedHero_Implementation(const FGameplayTag& HeroTag)
 {
-	if (!HeroTag.IsValid())return;
-	SelectedHeroTag = HeroTag;
+	ACP_PlayerState* PS = GetPlayerState<ACP_PlayerState>();
+	if (!IsValid(PS))return;
+	PS->Server_SelectHero(HeroTag);
 }
+
+void ACP_PlayerController::Server_LockedInHero_Implementation()
+{
+	ACP_PlayerState* PS = GetPlayerState<ACP_PlayerState>();
+	if (!IsValid(PS))return;
+	PS->Server_LockInHero();
+}
+
+void ACP_PlayerController::Server_StartGame_Implementation(const FString& MapName)
+{
+	ACP_LobbyGameMode* GM = GetWorld()->GetAuthGameMode<ACP_LobbyGameMode>();
+
+	if (!IsValid(GM))return;
+	GM->StartGame(MapName);
+}
+
 void ACP_PlayerController::Jump()
 {
 	if(!IsValid(GetCharacter()))return;
@@ -132,11 +150,45 @@ void ACP_PlayerController::QAbility()
 
 void ACP_PlayerController::RAbility()
 {
+	ActivateAbility(CP_Tags::CPAbilities::Shared::R);
 }
 
 void ACP_PlayerController::EAbility()
 {
+	if (!IsAlive()) return;
+
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
+	if (!IsValid(ASC)) return;
+
+	// LocalPredicted
+	for (const FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+	{
+		if (Spec.Ability->AbilityTags.HasTag(CP_Tags::CPAbilities::Shared::E))
+		{
+			ASC->AbilitySpecInputPressed(const_cast<FGameplayAbilitySpec&>(Spec));
+			ASC->TryActivateAbility(Spec.Handle);
+			break;
+		}
+	}
 }
+
+void ACP_PlayerController::EAbilityReleased()
+{
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
+	if (!IsValid(ASC)) return;
+
+	// LocalPredicted
+	for (const FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+	{
+		if (Spec.IsActive() && Spec.Ability->AbilityTags.HasTag(CP_Tags::CPAbilities::Shared::E))
+		{
+			ASC->AbilitySpecInputReleased(const_cast<FGameplayAbilitySpec&>(Spec));
+			break;
+		}
+	}
+}
+
+
 
 bool ACP_PlayerController::IsAlive() const
 {
@@ -145,9 +197,14 @@ bool ACP_PlayerController::IsAlive() const
 	return BaseCharacter->IsAlive();
 }
 
+
+
 FGameplayTag ACP_PlayerController::GetSelectedHeroTag() const
 {
-	return SelectedHeroTag;
+	if (const ACP_PlayerState* PS = GetPlayerState<ACP_PlayerState>()) {
+		return PS->GetSelectedHeroTag();
+	}
+	return FGameplayTag();
 }
 
 void ACP_PlayerController::Client_NotifyAbilityRejected_Implementation(const FGameplayTag& AbilityTag)

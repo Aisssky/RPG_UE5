@@ -9,6 +9,14 @@ namespace CP_Tags
 {
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(None);
 
+	namespace GamePhase
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Lobby);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(CharacterSelect);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(PreGame);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(InProgress);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(PostGame);
+	}
 	namespace SetByCaller
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Projectile);

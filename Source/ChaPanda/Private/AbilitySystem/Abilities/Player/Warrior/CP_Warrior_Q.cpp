@@ -105,3 +105,4 @@ void UCP_Warrior_Q::OnMontageEnd()
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 
 }
+

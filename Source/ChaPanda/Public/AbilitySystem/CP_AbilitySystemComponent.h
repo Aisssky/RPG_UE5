@@ -24,6 +24,7 @@ public:
 
 
 private:
-
+	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
+	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 	void HandleActivateAbility(const FGameplayAbilitySpec& AbilitySpec);
 };

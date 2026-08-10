@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "GameplayTagContainer.h"
 #include "CP_GameMode.generated.h"
 
 UCLASS()
-class CHAPANDA_API ACP_GameMode : public AGameModeBase
+class CHAPANDA_API ACP_GameMode : public AGameMode
 {
 	GENERATED_BODY()
 public:
