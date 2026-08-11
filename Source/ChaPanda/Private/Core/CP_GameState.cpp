@@ -2,8 +2,8 @@
 
 
 #include "Core/CP_GameState.h"
-#include "GameFrameWork/GameMode.h"
-#include "Net/UnrealNetWork.h"
+#include "GameFramework/GameMode.h"
+#include "Net/UnrealNetwork.h"
 
 void ACP_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
