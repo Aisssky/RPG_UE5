@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cha|GamePhase", meta = (AllowPrivateAccess = "true"))
 	float PhaseStartTime = 0.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cha|GamePhase", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = "Cha|GamePhase", meta = (AllowPrivateAccess = "true"))
 	float PhaseDuration = -1.0f;
 
 	void SetGamePhase(FGameplayTag NewPhase, float Duration = -1.0f);

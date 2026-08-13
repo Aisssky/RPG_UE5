@@ -7,6 +7,14 @@ namespace CP_Tags
 {
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(None, "CPTags.None", "None")
 
+		namespace Hero
+	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Warrior, "CPTags.Hero.Warrior", "竹棍武者");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Mage, "CPTags.Hero.Mage", "茶灵术士");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Assassin, "CPTags.Hero.Assassin", "影叶刺客");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Doctor, "CPTags.Hero.Doctor", "茶医");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Archer, "CPTags.Hero.Archer", "竹弓射手");
+	}
 		namespace GamePhase
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Lobby, "CPTags.GamePhase.Lobby","waiting for players to join");

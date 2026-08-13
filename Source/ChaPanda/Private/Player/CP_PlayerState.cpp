@@ -37,9 +37,14 @@ void ACP_PlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(ACP_PlayerState, AssistCount);
 }
 
-void ACP_PlayerState::OnRep_SelectedHeroTag()
+void ACP_PlayerState::OnRep_SelectedHeroTag(FGameplayTag OldTag)
 {
-	//todo
+	OnHeroSelectionChanged.Broadcast(OldTag, SelectedHeroTag);
+}
+
+void ACP_PlayerState::OnRep_bHeroLocked()
+{
+	OnHeroLockChanged.Broadcast(bHeroLocked);
 }
 
 bool ACP_PlayerState::Server_SelectHero_Validate(const FGameplayTag& HeroTag)
@@ -77,4 +82,3 @@ void ACP_PlayerState::Server_LockInHero_Implementation()
 
 	bHeroLocked=true;
 }
-

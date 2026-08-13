@@ -14,21 +14,36 @@ ACP_LobbyGameMode::ACP_LobbyGameMode()
 	PlayerStateClass = ACP_PlayerState::StaticClass();
 	GameStateClass = ACP_GameState::StaticClass();
 
+	PrimaryActorTick.bCanEverTick = true;
 	bDelayedStart = true;
+}
+
+void ACP_LobbyGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	ACP_GameState* GS = GetGameState<ACP_GameState>();
+	if (!GS)return;
+
+	if (GS->GamePhaseTag != CP_Tags::GamePhase::CharacterSelect)return;
+
+	bool bCountdownOver = GS->PhaseDuration >= 0.f && GS->GetRemainingPhaseTime() <= 0.f;
+
+	if ((bCountdownOver || CanStartGame()) && !bMatchTravelPending) {
+		bMatchTravelPending = true;
+		GetWorld()->ServerTravel(PendingMapName + TEXT("?listen"));
+	}
+	
 }
 
 void ACP_LobbyGameMode::StartGame(const FString& MapName)
 {
-	if (!CanStartGame()) {
-		UE_LOG(LogTemp, Warning, TEXT("[Lobby] Cannot start: not all players locked"));
-		return;
+	PendingMapName = MapName;
+	bMatchTravelPending = false;
+
+	if (ACP_GameState* GS = GetGameState<ACP_GameState>()) {
+		GS->SetGamePhase(CP_Tags::GamePhase::CharacterSelect, CharacterSelectDuration);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("[Lobby] ServerTravel → %s"), *MapName);
-
-	GetWorld()->ServerTravel(MapName + TEXT("?listen"));
-
-	//servertravel
 }
 
 int32 ACP_LobbyGameMode::GetLockedPlayerCount()

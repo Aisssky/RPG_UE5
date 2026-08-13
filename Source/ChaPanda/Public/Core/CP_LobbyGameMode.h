@@ -16,8 +16,10 @@ class CHAPANDA_API ACP_LobbyGameMode : public AGameMode
 	
 public:
 	ACP_LobbyGameMode();
+	virtual void Tick(float DeltaSeconds)override;
 
 	void StartGame(const FString& MapName);
+
 	//youshihouhaizhenshifenbuqingshenmeshihoujiaogeiUPROPERTY^
 	UFUNCTION(BlueprintCallable)
 	int32 GetLockedPlayerCount();
@@ -29,5 +31,11 @@ protected:
 	virtual void PostLogin(APlayerController* NewPlayer)override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController)override;
 	virtual bool ReadyToStartMatch_Implementation()override;
+
+	UPROPERTY(EditDefaultsOnly,Category="Cha|Lobby")
+	float CharacterSelectDuration = 30.f;
+
+	FString PendingMapName;
+	bool bMatchTravelPending = false;
 
 };

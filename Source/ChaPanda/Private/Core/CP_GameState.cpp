@@ -10,9 +10,7 @@ void ACP_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ACP_GameState, GamePhaseTag);
-	DOREPLIFETIME(ACP_GameState, PhaseStartTime);
 	DOREPLIFETIME(ACP_GameState, PhaseDuration);
-	DOREPLIFETIME(ACP_GameState, MatchTimeElapsed);
 }
 
 void ACP_GameState::Tick(float DeltaSeconds)

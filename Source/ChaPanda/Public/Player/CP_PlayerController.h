@@ -21,8 +21,16 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetSelectedHeroTag() const;
+	UFUNCTION(BlueprintCallable,Server, Reliable)
+	void Server_StartGame(const FString& MapName);
+	UFUNCTION(BlueprintCallable,Server, Reliable)
+	void Server_SelectedHero(const FGameplayTag& HeroTag);
+
+	UFUNCTION(BlueprintCallable,Server, Reliable)
+	void Server_LockedInHero();
 
 protected:
+	
 	virtual void SetupInputComponent() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -57,15 +65,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Cha|Input|Abilities")
 	TObjectPtr<UInputAction> EAction;
-
-	UFUNCTION(Server,Reliable)
-	void Server_SelectedHero(const FGameplayTag& HeroTag);
-
-	UFUNCTION(Server, Reliable)
-	void Server_LockedInHero();
-
-	UFUNCTION(Server,Reliable)
-	void Server_StartGame(const FString& MapName);
 
 	void Jump();
 	void StopJumping();

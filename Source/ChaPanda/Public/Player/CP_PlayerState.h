@@ -9,6 +9,12 @@
 #include "Net/UnrealNetwork.h"
 #include "CP_PlayerState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(
+	FOnHeroSelectionChanged, FGameplayTag, OldTag, FGameplayTag, NewTag
+);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHeroLockChanged, bool, bLocked);
+
 class UAbilitySystemComponent;
 class UAttributeSet;
 
@@ -50,16 +56,25 @@ public:
 	FGameplayTag SelectedHeroTag;
 
 	UFUNCTION()
-	void OnRep_SelectedHeroTag();
+	void OnRep_SelectedHeroTag(FGameplayTag OldTag);
 
-	UPROPERTY(BlueprintReadOnly,Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_bHeroLocked, BlueprintReadOnly)
 	bool bHeroLocked;
 
+	UFUNCTION()
+	void OnRep_bHeroLocked();
+
+	UPROPERTY(BlueprintAssignable, Category = "Cha|Hero")
+	FOnHeroLockChanged OnHeroLockChanged;
+
+	UPROPERTY(BlueprintAssignable,Category="Cha|Hero")
+	FOnHeroSelectionChanged OnHeroSelectionChanged;
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_SelectHero(const FGameplayTag& HeroTag);
 
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_LockInHero();
+
 
 	void AddKill() { ++KillCount; }
 	void AddDeath() { ++DeathCount; }
