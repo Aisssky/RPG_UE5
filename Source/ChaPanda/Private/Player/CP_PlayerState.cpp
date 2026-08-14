@@ -66,7 +66,10 @@ void ACP_PlayerState::Server_SelectHero_Implementation(const FGameplayTag& HeroT
 				return;
 			}
 		}
+
+		FGameplayTag OldTag=SelectedHeroTag;
 		SelectedHeroTag = HeroTag;
+		OnHeroSelectionChanged.Broadcast(OldTag, SelectedHeroTag);
 	}
 }
 
@@ -81,4 +84,5 @@ void ACP_PlayerState::Server_LockInHero_Implementation()
 	if (bHeroLocked)return;
 
 	bHeroLocked=true;
+	OnHeroLockChanged.Broadcast(true);
 }

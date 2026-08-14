@@ -24,7 +24,10 @@ void UCP_LobbyWidget::NativeConstruct()
 
 	if (StartGameButton) {
 		StartGameButton->OnClicked.AddDynamic(this, &UCP_LobbyWidget::OnStartGameClicked);
-		StartGameButton->SetIsEnabled(false);
+
+		if (APlayerController* PC = GetOwningPlayer()) {
+			StartGameButton->SetIsEnabled(PC->HasAuthority());
+		}
 	}
 
 	RefreshPlayerList();

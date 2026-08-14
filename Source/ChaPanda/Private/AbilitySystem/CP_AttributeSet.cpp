@@ -22,7 +22,7 @@ void UCP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, CritDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MoveSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, Attack, COND_None, REPNOTIFY_Always);
-
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, DamageReduction, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME(ThisClass, bAttributesInitialized);
 }
 
@@ -35,8 +35,6 @@ void UCP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	{
 		if(Data.EvaluatedData.Attribute == GetHealthAttribute())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[AttrSet] Health GE executed | Before=%.1f | Modifier=%.2f | AfterClamp=%.1f | Effect=%s"),
-				GetHealth(), Data.EvaluatedData.Magnitude, FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()), *Data.EffectSpec.Def->GetName());
 			SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 		}
 
@@ -77,9 +75,6 @@ void UCP_AttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue)
 
 void UCP_AttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 {
-	UE_LOG(LogCPAttributeSet, Verbose, TEXT("[CPAttributeSet] OnRep_MaxHealth | Old=%.1f New=%.1f | Owner=%s"),
-		OldValue.GetCurrentValue(), MaxHealth.GetCurrentValue(),
-		GetOwningActor() ? *GetOwningActor()->GetName() : TEXT("NULL"));
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxHealth, OldValue);
 }
 
@@ -116,5 +111,10 @@ void UCP_AttributeSet::OnRep_CritDamage(const FGameplayAttributeData& OldValue)
 void UCP_AttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MoveSpeed, OldValue);
+}
+
+void UCP_AttributeSet::OnRep_DamageReduction(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, DamageReduction, OldValue);
 }
 

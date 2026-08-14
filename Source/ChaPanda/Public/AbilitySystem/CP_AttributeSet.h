@@ -60,6 +60,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MoveSpeed)
 	FGameplayAttributeData MoveSpeed;
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_DamageReduction)
+	FGameplayAttributeData DamageReduction;
+
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
 	
@@ -88,6 +91,9 @@ public:
 	UFUNCTION()
 	void OnRep_MoveSpeed(const FGameplayAttributeData& OldValue);
 
+	UFUNCTION()
+	void OnRep_DamageReduction(const FGameplayAttributeData& OldValue);
+
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, Mana);
@@ -97,6 +103,6 @@ public:
 	ATTRIBUTE_ACCESSORS(ThisClass, CritRate);
 	ATTRIBUTE_ACCESSORS(ThisClass, CritDamage);
 	ATTRIBUTE_ACCESSORS(ThisClass, MoveSpeed);
-
+	ATTRIBUTE_ACCESSORS(ThisClass, DamageReduction);
 
 };

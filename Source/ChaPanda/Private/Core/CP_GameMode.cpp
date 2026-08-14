@@ -15,7 +15,7 @@ ACP_GameMode::ACP_GameMode()
 	GameStateClass = ACP_GameState::StaticClass();
 	DefaultPawnClass = ACP_PlayerCharacter::StaticClass();
 
-	bDelayedStart = true;
+	//bDelayedStart = true;
 }
 
 void ACP_GameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)

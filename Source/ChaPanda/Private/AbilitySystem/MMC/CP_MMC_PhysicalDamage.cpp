@@ -11,6 +11,7 @@ UCP_MMC_PhysicalDamage::UCP_MMC_PhysicalDamage()
 	RelevantAttributesToCapture.Add(FGameplayEffectAttributeCaptureDefinition(UCP_AttributeSet::GetDefenseAttribute(), EGameplayEffectAttributeCaptureSource::Target, true));
 	RelevantAttributesToCapture.Add(FGameplayEffectAttributeCaptureDefinition(UCP_AttributeSet::GetCritDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true));
 	RelevantAttributesToCapture.Add(FGameplayEffectAttributeCaptureDefinition(UCP_AttributeSet::GetCritRateAttribute(), EGameplayEffectAttributeCaptureSource::Source, true));
+	RelevantAttributesToCapture.Add(FGameplayEffectAttributeCaptureDefinition(UCP_AttributeSet::GetDamageReductionAttribute(), EGameplayEffectAttributeCaptureSource::Target, true));
 }
 
 float UCP_MMC_PhysicalDamage::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -26,15 +27,15 @@ FAggregatorEvaluateParameters EvalParams;
 	GetCapturedAttributeMagnitude(RelevantAttributesToCapture[2],Spec,EvalParams, CritDamage);
 	float CritRate = 0.f;
 	GetCapturedAttributeMagnitude(RelevantAttributesToCapture[3],Spec,EvalParams, CritRate);
-
+	float DamageReduction = 0.f;
+	GetCapturedAttributeMagnitude(RelevantAttributesToCapture[4], Spec, EvalParams, DamageReduction);
 	float Level = Spec.GetLevel();
 
 	if (FMath::FRand() <= CritRate) {
 		IsCrit = true;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("[MMC] Attack=%.1fDefense = % .1f CritRate = % .3f CritDamage = % .1f"),Attack, Defense, CritRate, CritDamage);
-	UE_LOG(LogTemp, Warning, TEXT("[MMC] SourceASC=%s |TargetASC = % s"),* GetNameSafe(Spec.GetContext().GetInstigatorAbilitySystemComponent()),*GetNameSafe(Spec.GetContext().GetEffectCauser()));
-	float Result = BaseDamage * (Attack / (Attack + 50)) * (100 / (100 + Defense))*(IsCrit?CritDamage:1.0);
-	UE_LOG(LogTemp, Warning, TEXT("[MMC] Result=%.2f"), Result);
+	float Result = BaseDamage * (Attack / (Attack + 50)) * (100 / (100 + Defense))
+		*(1-FMath::Clamp(DamageReduction,0,100)/100) 
+		* (IsCrit ? CritDamage : 1.0);
 	return Result;
 }
