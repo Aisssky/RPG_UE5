@@ -3,6 +3,7 @@
 
 #include "UI/CP_CharacterSelect.h"
 #include "Components/TextBlock.h"
+#include "Components/WrapBox.h"
 #include "Core/CP_GameState.h"
 #include "Player/CP_PlayerState.h"
 #include "GameplayTags/CP_Tags.h"
@@ -12,12 +13,6 @@
 void UCP_CharacterSelect::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	CardWarrior->SetupCard(CP_Tags::Hero::Warrior, FText::FromString(TEXT("竹棍武者")));
-	CardMage->SetupCard(CP_Tags::Hero::Mage, FText::FromString(TEXT("?")));
-	CardAssassin->SetupCard(CP_Tags::Hero::Assassin, FText::FromString(TEXT("?")));
-	CardDoctor->SetupCard(CP_Tags::Hero::Doctor, FText::FromString(TEXT("?")));
-	CardArcher->SetupCard(CP_Tags::Hero::Archer, FText::FromString(TEXT("?")));
 
 	ACP_GameState* GS =GetWorld()->GetGameState<ACP_GameState>();
 	if (!GS)return;
@@ -69,23 +64,6 @@ void UCP_CharacterSelect::RefreshAllCards()
 			}
 		}
 	}
-
-	CardWarrior->SetCardState(
-		LockedTags.Contains(CP_Tags::Hero::Warrior) &&
-		MyTag != CP_Tags::Hero::Warrior, MyTag == CP_Tags::Hero::Warrior);
-	CardMage->SetCardState(
-		LockedTags.Contains(CP_Tags::Hero::Mage) && 
-		MyTag != CP_Tags::Hero::Mage, MyTag == CP_Tags::Hero::Mage);
-	CardDoctor->SetCardState(
-		LockedTags.Contains(CP_Tags::Hero::Doctor) &&
-		MyTag != CP_Tags::Hero::Doctor, MyTag == CP_Tags::Hero::Doctor);
-	CardArcher->SetCardState(
-		LockedTags.Contains(CP_Tags::Hero::Archer) &&
-		MyTag != CP_Tags::Hero::Archer, MyTag == CP_Tags::Hero::Archer);
-	CardAssassin->SetCardState(
-		LockedTags.Contains(CP_Tags::Hero::Assassin) &&
-		MyTag != CP_Tags::Hero::Assassin, MyTag == CP_Tags::Hero::Assassin);
-
 	if (StatusText) {
 		StatusText->SetText(bLocked
 			? FText::FromString(TEXT("已锁定"))

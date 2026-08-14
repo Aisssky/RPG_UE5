@@ -6,31 +6,23 @@
 #include "Blueprint/UserWidget.h"
 #include "GameplayTagContainer.h"
 #include "Player/CP_PlayerState.h"
+#include "Data/CP_HeroCatalog.h"
 #include "CP_CharacterSelect.generated.h"
 
 class UTextBlock;
 class UCP_HeroCard;
-
+class UWrapBox;
 UCLASS()
 class CHAPANDA_API UCP_CharacterSelect : public UUserWidget
 {
 	GENERATED_BODY()
 public:
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCP_HeroCard> CardWarrior;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setup")
+	TSubclassOf<UCP_HeroCard> HeroCardClass;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCP_HeroCard> CardMage;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCP_HeroCard> CardDoctor;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCP_HeroCard> CardArcher;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCP_HeroCard> CardAssassin;
+	TObjectPtr<UWrapBox> CardContainer; 
 
 protected:
 	virtual void NativeConstruct() override;
@@ -42,7 +34,13 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> SelectedText;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TObjectPtr<UCP_HeroCatalog> HeroCatalog;
+
 private:
+
+	UPROPERTY()
+	TArray<TObjectPtr<UCP_HeroCard>> CardWidgets;
 	void RefreshAllCards();
 
 	UFUNCTION()

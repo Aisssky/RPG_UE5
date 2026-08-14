@@ -10,6 +10,8 @@
 class UBorder;
 class UTextBlock;
 class UButton;
+class UCP_HeroData;
+
 
 UCLASS()
 class CHAPANDA_API UCP_HeroCard : public UUserWidget
@@ -17,8 +19,9 @@ class CHAPANDA_API UCP_HeroCard : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void SetupCard(FGameplayTag InHeroTag, const FText& InHeroName);
+	void SetupCard(UCP_HeroData* InHeroData);
 
+	FGameplayTag GetHeroTag()const { return HeroTag; }
 	void SetCardState(bool bInIsTaken, bool bInIsMyPick);
 
 protected:

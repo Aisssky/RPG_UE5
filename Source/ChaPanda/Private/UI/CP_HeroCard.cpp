@@ -6,11 +6,13 @@
 #include "Components/Button.h"
 #include "Components/Border.h" 
 #include "Player/CP_PlayerController.h"
+#include "Data/CP_HeroData.h"
 
-void UCP_HeroCard::SetupCard(FGameplayTag InHeroTag, const FText& InHeroName)
+void UCP_HeroCard::SetupCard(UCP_HeroData* InHeroData)
 {
-	HeroTag = InHeroTag;
-	HeroNameText->SetText(InHeroName);
+	if (!InHeroData)return;
+	HeroTag = InHeroData->HeroTag;
+	HeroNameText->SetText(InHeroData->DisplayName);
 }
 
 void UCP_HeroCard::SetCardState(bool bInIsTaken, bool bInIsMyPick)
