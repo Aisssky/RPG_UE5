@@ -9,6 +9,10 @@ namespace CP_Tags
 {
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(None);
 
+	namespace Status
+	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dead);
+	}
 	namespace Hero
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Warrior);
@@ -46,6 +50,7 @@ namespace CP_Tags
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(R);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(E);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shift);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Respawn);
 		}
 		namespace Enemy
 		{

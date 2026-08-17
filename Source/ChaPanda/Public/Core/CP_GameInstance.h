@@ -12,6 +12,7 @@ class CHAPANDA_API UCP_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
+
 	UFUNCTION(BlueprintCallable, Category = "Cha|Multiplayer")
 	void HostGame(const FString& MapName = TEXT("CPMap"));
 

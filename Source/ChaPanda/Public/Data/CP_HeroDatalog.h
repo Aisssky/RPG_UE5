@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "CP_HeroCatalog.generated.h"
+#include "CP_HeroDatalog.generated.h"
 
 class UCP_HeroData;
 UCLASS(BlueprintType, Blueprintable)
-class CHAPANDA_API UCP_HeroCatalog : public UPrimaryDataAsset
+class CHAPANDA_API UCP_HeroDatalog : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 public:

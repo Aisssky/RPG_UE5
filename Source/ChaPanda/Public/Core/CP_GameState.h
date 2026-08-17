@@ -50,4 +50,11 @@ public:
 	UPROPERTY(Replicated,BlueprintReadOnly,Category="Cha|Match",meta=(AllowPrivateAccess="true"))
 	float MatchTimeElapsed = 0.f;
 
+	UPROPERTY(Replicated,BlueprintReadOnly,Category="Cha|Wava")
+	int32 CurrentWave = 0;
+
+	UPROPERTY(Replicated,BlueprintReadOnly,Category="Cha|Wava")
+	int32 AliveEnemyCount = 0;
+
+
 };

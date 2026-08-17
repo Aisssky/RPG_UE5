@@ -7,6 +7,10 @@ namespace CP_Tags
 {
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(None, "CPTags.None", "None")
 
+		namespace Status
+	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Dead, "CPTags.Status.Dead", "dead");
+	}
 		namespace Hero
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Warrior, "CPTags.Hero.Warrior", "竹棍武者");

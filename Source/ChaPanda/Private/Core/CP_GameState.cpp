@@ -11,6 +11,10 @@ void ACP_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
 	DOREPLIFETIME(ACP_GameState, GamePhaseTag);
 	DOREPLIFETIME(ACP_GameState, PhaseDuration);
+
+	DOREPLIFETIME(ACP_GameState, CurrentWave);
+	DOREPLIFETIME(ACP_GameState, AliveEnemyCount);
+
 }
 
 void ACP_GameState::Tick(float DeltaSeconds)

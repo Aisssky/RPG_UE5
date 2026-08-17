@@ -8,12 +8,24 @@
 #include "Player/CP_PlayerState.h"
 #include "GameplayTags/CP_Tags.h"
 #include "UI/CP_HeroCard.h"
+#include "Data/CP_HeroData.h"
 #include "Player/CP_PlayerController.h"
 
 void UCP_CharacterSelect::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+
+	CardWidgets.Empty();
+	if (HeroDatalog && HeroCardClass) {
+		for (UCP_HeroData* HeroData : HeroDatalog->Heroes) {
+			if (!HeroData)continue;
+			UCP_HeroCard* Card = CreateWidget<UCP_HeroCard>(this, HeroCardClass);
+			CardContainer->AddChild(Card);
+			Card->SetupCard(HeroData);
+			CardWidgets.Add(Card);
+		}
+	}
 	ACP_GameState* GS =GetWorld()->GetGameState<ACP_GameState>();
 	if (!GS)return;
 
@@ -63,6 +75,12 @@ void UCP_CharacterSelect::RefreshAllCards()
 				LockedTags.Add(CPS->GetSelectedHeroTag());
 			}
 		}
+	}
+	//刷新卡片
+	for (UCP_HeroCard* Card : CardWidgets)
+	{
+		FGameplayTag Tag = Card->GetHeroTag();
+		Card->SetCardState(LockedTags.Contains(Tag) && MyTag != Tag, MyTag == Tag);
 	}
 	if (StatusText) {
 		StatusText->SetText(bLocked

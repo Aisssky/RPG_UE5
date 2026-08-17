@@ -8,8 +8,8 @@
 #include "Net/UnrealNetwork.h"
 #include "AIController.h"
 #include "GameplayTags/CP_Tags.h"
-
-
+#include "Core/CP_GameState.h"
+#include "Core/CP_GameMode.h"
 ACP_EnemyCharacter::ACP_EnemyCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -89,6 +89,13 @@ void ACP_EnemyCharacter::HandleDeath()
 {
 	Super::HandleDeath();
 
+	if (HasAuthority()) {
+		if (ACP_GameState* GS = GetWorld()->GetGameState<ACP_GameState>())
+			GS->AliveEnemyCount = FMath::Max(0, GS->AliveEnemyCount - 1);
+
+		if (ACP_GameMode* GM = GetWorld()->GetAuthGameMode<ACP_GameMode>())
+			GM->OnEnemyKilled();
+	}
 	AAIController* AIController = GetController<AAIController>();
 	if (!IsValid(AIController)) return;
 	AIController->StopMovement();

@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameplayTagContainer.h"
 #include "Player/CP_PlayerState.h"
-#include "Data/CP_HeroCatalog.h"
+#include "Data/CP_HeroDatalog.h"
 #include "CP_CharacterSelect.generated.h"
 
 class UTextBlock;
@@ -35,7 +35,7 @@ protected:
 	TObjectPtr<UTextBlock> SelectedText;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TObjectPtr<UCP_HeroCatalog> HeroCatalog;
+	TObjectPtr<UCP_HeroDatalog> HeroDatalog;
 
 private:
 
