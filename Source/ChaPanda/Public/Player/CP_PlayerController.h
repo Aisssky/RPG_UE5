@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "GameplayTagContainer.h"
+#include "Blueprint/UserWidget.h"
 #include "CP_PlayerController.generated.h"
 
 
@@ -29,6 +30,18 @@ public:
 	UFUNCTION(BlueprintCallable,Server, Reliable)
 	void Server_LockedInHero();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Cha|UI")
+	TSubclassOf<UUserWidget> LobbyWidgetClass;   // 大厅 UI 蓝图类（WBP_Lobby）
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> LobbyWidgetInstance;
+
+	UFUNCTION()
+	void OnGamePhaseChanged(FGameplayTag OldPhase, FGameplayTag NewPhase);
+
+	virtual void BeginPlay() override;
+
+	virtual void OnPossess(APawn* InPawn) override;
 protected:
 	
 	virtual void SetupInputComponent() override;

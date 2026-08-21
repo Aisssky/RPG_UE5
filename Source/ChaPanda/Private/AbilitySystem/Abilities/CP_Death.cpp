@@ -17,6 +17,10 @@ void UCP_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 	bHasRespawned = false;
 
 	Super::ActivateAbility(Handle,ActorInfo, ActivationInfo, TriggerEventData);
+	if (!Montage_Death) {
+		RespawnCharacter(); return;
+	}
+
 	UAbilityTask_PlayMontageAndWait* DeathMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
@@ -26,14 +30,26 @@ void UCP_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 		false,
 		1.0f
 	);
-	if (!Montage_Death) {
-		RespawnCharacter(); return;
+
+
+	DeathMontageTask->OnCompleted.AddDynamic(this, &UCP_Death::OnDeathMontageEnded);
+	DeathMontageTask->OnBlendOut.AddDynamic(this, &UCP_Death::OnDeathMontageEnded);
+
+	DeathMontageTask->ReadyForActivation();
+
+	
+}
+
+void UCP_Death::OnDeathMontageEnded()
+{
+	if (bHasRespawned)return;
+	bHasRespawned = true;
+
+	if (!HasAuthority(&CurrentActivationInfo)) {
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
 	}
 
-	DeathMontageTask->OnCompleted.AddDynamic(this, &UCP_Death::RespawnCharacter);
-
-	DeathMontageTask->OnBlendOut.AddDynamic(this, &UCP_Death::RespawnCharacter);
-	DeathMontageTask->ReadyForActivation();
 
 	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
 	FGameplayEffectContextHandle Ctx = ASC->MakeEffectContext();
@@ -43,13 +59,18 @@ void UCP_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 		);
 		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 	}
+
+	if (ACP_BaseCharacter* BC = Cast<ACP_BaseCharacter>(GetAvatarActorFromActorInfo())) {
+		BC->SetActorHiddenInGame(true);//隐藏
+		BC->SetActorEnableCollision(false);//尸体不挡路
+	}
+	GetWorld()->GetTimerManager().SetTimer(
+		DeathTimerHandle, this, &UCP_Death::RespawnCharacter, RespawnDelay, false
+	);
 }
 
 void UCP_Death::RespawnCharacter()
 {
-	if (bHasRespawned)return;
-	bHasRespawned = true;
-
 	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
 	AActor* Avatar = GetAvatarActorFromActorInfo();
 	ACP_BaseCharacter* BaseCharacter = Cast<ACP_BaseCharacter>(Avatar);
@@ -70,6 +91,9 @@ void UCP_Death::RespawnCharacter()
 		return;
 	}
 	
+	BaseCharacter->SetActorHiddenInGame(false);
+	BaseCharacter->SetActorEnableCollision(true);
+
 	BaseCharacter->ResetAttributes();
 
 	if (AController* PC = BaseCharacter->GetController()) {

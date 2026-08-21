@@ -3,6 +3,7 @@
 
 #include "Core/CP_GameState.h"
 #include "GameFramework/GameMode.h"
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 void ACP_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -15,6 +16,7 @@ void ACP_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(ACP_GameState, CurrentWave);
 	DOREPLIFETIME(ACP_GameState, AliveEnemyCount);
 
+	DOREPLIFETIME(ACP_GameState, HostPlayerState);
 }
 
 void ACP_GameState::Tick(float DeltaSeconds)
@@ -38,6 +40,29 @@ void ACP_GameState::OnRep_GamePhaseTag(FGameplayTag OldPhase)
 {
 	//广播UI切换
 	OnGamePhaseChanged.Broadcast(OldPhase, GamePhaseTag);
+}
+
+void ACP_GameState::AddPlayerState(APlayerState* PlayerState)
+{
+	Super::AddPlayerState(PlayerState);
+
+	if (HasAuthority() && !HostPlayerState)
+	{
+		HostPlayerState = PlayerState;
+	}
+
+	OnPlayerListChanged.Broadcast();
+}
+
+void ACP_GameState::RemovePlayerState(APlayerState* PlayerState)
+{
+	Super::RemovePlayerState(PlayerState);
+	OnPlayerListChanged.Broadcast();
+}
+
+void ACP_GameState::OnRep_HostPlayerState()
+{
+	OnHostChanged.Broadcast(HostPlayerState);
 }
 
 void ACP_GameState::SetGamePhase(FGameplayTag NewPhase, float Duration)

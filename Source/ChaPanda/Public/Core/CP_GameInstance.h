@@ -6,17 +6,16 @@
 #include "Engine/GameInstance.h"
 #include "CP_GameInstance.generated.h"
 
-
-UCLASS()
+UCLASS(Config = Game)
 class CHAPANDA_API UCP_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cha|Multiplayer")
-	void HostGame(const FString& MapName = TEXT("CPMap"));
+	void ConnectToOfficialServer();
 
-	UFUNCTION(BlueprintCallable, Category = "Cha|Multiplayer")
-	void JoinGame(const FString& IPAddress);
+	UPROPERTY(Config)
+	FString OfficialServerIP = TEXT("127.0.0.1");
 
 };

@@ -7,6 +7,7 @@
 #include "GameplayTags/CP_Tags.h"
 #include "GameFramework/PlayerController.h"
 #include "Player/CP_PlayerController.h"
+#include "Engine/NetConnection.h"
 
 ACP_LobbyGameMode::ACP_LobbyGameMode()
 {
@@ -16,6 +17,19 @@ ACP_LobbyGameMode::ACP_LobbyGameMode()
 
 	PrimaryActorTick.bCanEverTick = true;
 	bDelayedStart = true;
+	bUseSeamlessTravel = true;
+}
+
+void ACP_LobbyGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	ACP_GameState* GS = GetGameState<ACP_GameState>();
+	UE_LOG(LogTemp, Warning, TEXT("[UIDebug] LobbyGM BeginPlay: HasAuthority=%d GS=%s"),
+		(int32)HasAuthority(), GS ? TEXT("Valid") : TEXT("NULL"));
+	if (GS)
+	{
+		GS->SetGamePhase(CP_Tags::GamePhase::Lobby);
+	}
 }
 
 void ACP_LobbyGameMode::Tick(float DeltaSeconds)
@@ -31,7 +45,12 @@ void ACP_LobbyGameMode::Tick(float DeltaSeconds)
 
 	if ((bCountdownOver || CanStartGame()) && !bMatchTravelPending) {
 		bMatchTravelPending = true;
-		GetWorld()->ServerTravel(PendingMapName + TEXT("?listen"));
+		FString TravelURL = PendingMapName;
+		if (GetNetMode() == NM_ListenServer)
+		{
+			TravelURL += TEXT("?listen");
+		}
+		GetWorld()->ServerTravel(TravelURL);
 	}
 	
 }

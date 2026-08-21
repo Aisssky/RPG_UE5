@@ -12,6 +12,8 @@ namespace CP_Tags
 	namespace Status
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dead);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(PoisonMark);
+
 	}
 	namespace Hero
 	{

@@ -80,7 +80,7 @@ public:
 	void AddDeath() { ++DeathCount; }
 	void AddAssist() { ++AssistCount; }
 
-
+	virtual void CopyProperties(APlayerState* PlayerState) override;
 private:
 	UPROPERTY(Replicated,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	int32 KillCount=0;

@@ -10,6 +10,7 @@ namespace CP_Tags
 		namespace Status
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Dead, "CPTags.Status.Dead", "dead");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(PoisonMark, "CPTags.Status.PoisonMark", "PoisonMark");
 	}
 		namespace Hero
 	{

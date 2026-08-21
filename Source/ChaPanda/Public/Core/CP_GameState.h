@@ -8,9 +8,16 @@
 #include "Net/UnrealNetwork.h"
 #include "CP_GameState.generated.h"
 
+class APlayerState;
+
 //UI委托
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(
 	FOnGamePhaseChanged, FGameplayTag, OldPhase, FGameplayTag, NewPhase);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHostChanged, APlayerState*, HostPlayerState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerListChanged);
+
 UCLASS()
 class CHAPANDA_API ACP_GameState : public AGameState
 {
@@ -20,6 +27,22 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+
+	//房主（第一个连入的玩家）
+	virtual void AddPlayerState(APlayerState* PlayerState) override;
+	virtual void RemovePlayerState(APlayerState* PlayerState) override;
+
+	UPROPERTY(ReplicatedUsing = OnRep_HostPlayerState)
+	TObjectPtr<APlayerState> HostPlayerState;
+
+	UPROPERTY(BlueprintAssignable, Category = "Cha|Host")
+	FOnHostChanged OnHostChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Cha|Lobby")
+	FOnPlayerListChanged OnPlayerListChanged;
+
+	UFUNCTION()
+	void OnRep_HostPlayerState();
 
 	//游戏阶段
 	UPROPERTY(ReplicatedUsing=OnRep_GamePhaseTag)
@@ -56,5 +79,9 @@ public:
 	UPROPERTY(Replicated,BlueprintReadOnly,Category="Cha|Wava")
 	int32 AliveEnemyCount = 0;
 
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Cha|Match")
+	bool bMatchEnded=false;
 
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Cha|Match")
+	bool bVictory = false;
 };

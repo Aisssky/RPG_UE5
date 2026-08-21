@@ -6,6 +6,7 @@
 #include "AbilitySystem/CP_AttributeSet.h"	
 #include "GameplayTags/CP_Tags.h"
 #include "Core/CP_GameState.h"
+#include "Core/CP_GameInstance.h"
 
 ACP_PlayerState::ACP_PlayerState()
 {
@@ -47,6 +48,16 @@ void ACP_PlayerState::OnRep_bHeroLocked()
 	OnHeroLockChanged.Broadcast(bHeroLocked);
 }
 
+void ACP_PlayerState::CopyProperties(APlayerState* PlayerState)
+{
+	Super::CopyProperties(PlayerState);
+	if (ACP_PlayerState* CPS = Cast<ACP_PlayerState>(PlayerState))
+	{
+		CPS->SelectedHeroTag = SelectedHeroTag;
+		CPS->bHeroLocked = bHeroLocked;
+	}
+}
+
 bool ACP_PlayerState::Server_SelectHero_Validate(const FGameplayTag& HeroTag)
 {
 	return HeroTag.IsValid();
@@ -69,6 +80,7 @@ void ACP_PlayerState::Server_SelectHero_Implementation(const FGameplayTag& HeroT
 
 		FGameplayTag OldTag=SelectedHeroTag;
 		SelectedHeroTag = HeroTag;
+
 		OnHeroSelectionChanged.Broadcast(OldTag, SelectedHeroTag);
 	}
 }

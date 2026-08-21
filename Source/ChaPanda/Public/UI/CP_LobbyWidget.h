@@ -10,6 +10,7 @@
 class UHorizontalBox;
 class UButton;
 class UWidgetSwitcher;
+class APlayerState;
 
 UCLASS()
 class CHAPANDA_API UCP_LobbyWidget : public UUserWidget
@@ -30,6 +31,12 @@ public:
 	UPROPERTY(EditDefaultsOnly,Category="Cha|Lobby")
 	TSubclassOf<UUserWidget> PlayerEntryClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Cha|CharacterSelect")
+	TSubclassOf<UUserWidget> CharacterSelectWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> CharacterSelectWidgetInstance;
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
@@ -42,4 +49,12 @@ protected:
 
 	UFUNCTION()
 	void OnStartGameClicked();
+
+	UFUNCTION()
+	void OnHostChangedHandler(APlayerState* HostPlayerState);
+
+	UFUNCTION()
+	void OnPlayerListChangedHandler();
+
+	void RefreshStartButtonState();
 };

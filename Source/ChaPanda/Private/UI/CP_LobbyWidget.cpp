@@ -20,23 +20,30 @@ void UCP_LobbyWidget::NativeConstruct()
 	if (ACP_GameState* GS = GetWorld()->GetGameState<ACP_GameState>())
 	{
 		GS->OnGamePhaseChanged.AddDynamic(this, &UCP_LobbyWidget::OnPhaseChnaged);
+		GS->OnHostChanged.AddDynamic(this, &UCP_LobbyWidget::OnHostChangedHandler);
+		GS->OnPlayerListChanged.AddDynamic(this, &UCP_LobbyWidget::OnPlayerListChangedHandler);
 	}
 
 	if (StartGameButton) {
 		StartGameButton->OnClicked.AddDynamic(this, &UCP_LobbyWidget::OnStartGameClicked);
-
-		if (APlayerController* PC = GetOwningPlayer()) {
-			StartGameButton->SetIsEnabled(PC->HasAuthority());
-		}
 	}
 
+	RefreshStartButtonState();
 	RefreshPlayerList();
 }
 
 void UCP_LobbyWidget::NativeDestruct()
 {
+	if (CharacterSelectWidgetInstance)
+	{
+		CharacterSelectWidgetInstance->RemoveFromParent();
+		CharacterSelectWidgetInstance = nullptr;
+	}
+
 	if (ACP_GameState* GS = GetWorld()->GetGameState<ACP_GameState>()) {
 		GS->OnGamePhaseChanged.RemoveDynamic(this,&UCP_LobbyWidget::OnPhaseChnaged);
+		GS->OnHostChanged.RemoveDynamic(this,&UCP_LobbyWidget::OnHostChangedHandler);
+		GS->OnPlayerListChanged.RemoveDynamic(this,&UCP_LobbyWidget::OnPlayerListChangedHandler);
 	}
 
 	Super::NativeDestruct();
@@ -50,7 +57,11 @@ void UCP_LobbyWidget::OnPhaseChnaged(FGameplayTag OldPhase, FGameplayTag NewPhas
 		PhaseSwitcher->SetActiveWidgetIndex(0);
 	}
 	else if (NewPhase == CP_Tags::GamePhase::CharacterSelect) {
-		PhaseSwitcher->SetActiveWidgetIndex(1);
+		if (!CharacterSelectWidgetInstance && CharacterSelectWidgetClass)
+		{
+			CharacterSelectWidgetInstance = CreateWidget<UUserWidget>(this, CharacterSelectWidgetClass);
+			CharacterSelectWidgetInstance->AddToViewport();
+		}
 	}
 
 	RefreshPlayerList();
@@ -85,4 +96,49 @@ void UCP_LobbyWidget::OnStartGameClicked()
 	if (IsValid(PC)) {
 		PC->Server_StartGame(TEXT("CPMap"));
 	}
+}
+
+void UCP_LobbyWidget::OnHostChangedHandler(APlayerState* HostPlayerState)
+{
+	RefreshStartButtonState();
+}
+
+void UCP_LobbyWidget::OnPlayerListChangedHandler()
+{
+	RefreshPlayerList();
+}
+
+void UCP_LobbyWidget::RefreshStartButtonState()
+{
+	if (!StartGameButton) return;
+
+	bool bIsHost = false;
+	APlayerController* PC = GetOwningPlayer();
+	ACP_GameState* GS = GetWorld()->GetGameState<ACP_GameState>();
+
+	if (PC)
+	{
+		if (PC->HasAuthority())
+		{
+			bIsHost = true;
+		}
+		else if (GS)
+		{
+			bIsHost = (GS->HostPlayerState != nullptr && GS->HostPlayerState == PC->PlayerState);
+		}
+
+		FString MyPSName = TEXT("NULL");
+		if (PC->PlayerState) { MyPSName = PC->PlayerState->GetPlayerName(); }
+		FString HostPSName = TEXT("NULL");
+		if (GS && GS->HostPlayerState) { HostPSName = GS->HostPlayerState->GetPlayerName(); }
+
+		UE_LOG(LogTemp, Warning, TEXT("[HostDebug] HasAuthority=%d bIsHost=%d MyPS=%s HostPS=%s"),
+			(int32)PC->HasAuthority(), (int32)bIsHost, *MyPSName, *HostPSName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[HostDebug] GetOwningPlayer()==NULL"));
+	}
+
+	StartGameButton->SetIsEnabled(bIsHost);
 }

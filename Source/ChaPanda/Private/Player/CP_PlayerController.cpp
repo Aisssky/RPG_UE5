@@ -13,7 +13,72 @@
 #include "Player/CP_PlayerState.h"
 #include "Net/UnrealNetwork.h"
 #include "Core/CP_LobbyGameMode.h"
+#include "Core/CP_GameState.h"
 
+void ACP_PlayerController::OnGamePhaseChanged(FGameplayTag OldPhase, FGameplayTag NewPhase)
+{
+	if (!IsLocalPlayerController()) return;
+
+	if (NewPhase == CP_Tags::GamePhase::Lobby || NewPhase == CP_Tags::GamePhase::CharacterSelect)
+	{
+		SetIgnoreLookInput(true);
+		SetShowMouseCursor(true);
+		FInputModeGameAndUI InputMode;
+		InputMode.SetHideCursorDuringCapture(false);
+		SetInputMode(InputMode);
+		if (!LobbyWidgetInstance && LobbyWidgetClass)
+		{
+			LobbyWidgetInstance = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
+			if (LobbyWidgetInstance)
+			{
+				LobbyWidgetInstance->AddToViewport();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("[UIDebug] CreateWidget returned NULL, class=%s"), *LobbyWidgetClass->GetName());
+			}
+		}
+	}
+	else if (NewPhase == CP_Tags::GamePhase::InProgress)
+	{
+		SetIgnoreLookInput(false);
+		SetShowMouseCursor(false);
+		SetInputMode(FInputModeGameOnly());
+	}
+}
+
+void ACP_PlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	UE_LOG(LogTemp, Warning, TEXT("[UIDebug] OnPossess: HasAuthority=%d IsLocal=%d Pawn=%s"),
+		(int32)HasAuthority(), (int32)IsLocalPlayerController(),
+		InPawn ? *InPawn->GetName() : TEXT("NULL"));
+	if (!IsLocalPlayerController()) return;
+
+	SetIgnoreLookInput(false);
+	SetShowMouseCursor(false);
+	SetInputMode(FInputModeGameOnly());
+	if (LobbyWidgetInstance)
+	{
+		LobbyWidgetInstance->RemoveFromParent();
+		LobbyWidgetInstance = nullptr;
+	}
+}
+
+void ACP_PlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	ACP_GameState* GS = GetWorld()->GetGameState<ACP_GameState>();
+	UE_LOG(LogTemp, Warning, TEXT("[UIDebug] PC BeginPlay: HasAuthority=%d GS=%s Phase=%s"),
+		(int32)HasAuthority(),
+		GS ? TEXT("Valid") : TEXT("NULL"),
+		GS ? *GS->GamePhaseTag.ToString() : TEXT("NULL"));
+	if (GS)
+	{
+		GS->OnGamePhaseChanged.AddDynamic(this, &ACP_PlayerController::OnGamePhaseChanged);
+		OnGamePhaseChanged(FGameplayTag(), GS->GamePhaseTag);
+	}
+}
 
 void ACP_PlayerController::SetupInputComponent()
 {

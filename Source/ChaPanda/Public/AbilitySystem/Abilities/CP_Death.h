@@ -15,6 +15,8 @@ public:
 		const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 		const FGameplayEventData* TriggerEventData) override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Cha|Death")
+	float RespawnDelay = 5.f;
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cha|Montage")
 	TObjectPtr<UAnimMontage> Montage_Death;
@@ -23,8 +25,14 @@ protected:
 	TSubclassOf<UGameplayEffect> DeathEffect;
 
 
+
+	FTimerHandle DeathTimerHandle;
+
+	UFUNCTION()
+	void OnDeathMontageEnded();
+
 	UFUNCTION()
 	void RespawnCharacter();
-
+	
 	bool bHasRespawned = false;
 };

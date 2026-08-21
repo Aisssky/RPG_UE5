@@ -28,6 +28,7 @@ public:
 	bool CanStartGame();
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer)override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController)override;
 	virtual bool ReadyToStartMatch_Implementation()override;

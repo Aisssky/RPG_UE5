@@ -11,6 +11,9 @@
 #include "Data/CP_HeroData.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
+#include "Core/CP_GameInstance.h"
+#include "GameplayTags/CP_Tags.h"
+
 ACP_GameMode::ACP_GameMode()
 {
 	PlayerControllerClass = ACP_PlayerController::StaticClass();
@@ -24,6 +27,11 @@ ACP_GameMode::ACP_GameMode()
 void ACP_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (ACP_GameState* GS = GetGameState<ACP_GameState>())
+	{
+		GS->SetGamePhase(CP_Tags::GamePhase::InProgress);
+	}
 
 	GetWorldTimerManager().SetTimer(WaveTimerHandle, this, &ACP_GameMode::StartNextWave, 3.f, false);
 }
@@ -132,9 +140,11 @@ UClass* ACP_GameMode::GetDefaultPawnClassForController_Implementation(AControlle
 	ACP_PlayerState* PS = InController ? InController->GetPlayerState<ACP_PlayerState>():nullptr;
 
 	if (PS && HeroDatalog) {
-		FGameplayTag Tag = PS->GetSelectedHeroTag();
+		FGameplayTag Tag = PS ? PS->GetSelectedHeroTag() : FGameplayTag();
+
 		for (UCP_HeroData* HeroData : HeroDatalog->Heroes) {
-			if (HeroData && HeroData->HeroTag == Tag)return HeroData->PawnClass;
+			if (!HeroData)continue;
+			if (HeroData->HeroTag == Tag)return HeroData->PawnClass;
 		}
 	}
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
